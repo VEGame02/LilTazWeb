@@ -7,8 +7,7 @@
 
 <title>Lil Taz Runner</title>
 
-<meta
-name="viewport"
+<meta name="viewport"
 content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 
 <style>
@@ -24,62 +23,43 @@ body{
     touch-action:none;
 }
 
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
 #unity-container{
-    position:fixed;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
+    position:relative;
+    background:#000;
     overflow:hidden;
 }
 
 #unity-canvas{
-    width:100%;
-    height:100%;
     display:block;
     background:#000;
     outline:none;
 }
 
-/* ---------------- Loading Screen ---------------- */
+/* Loading Screen */
 
 #loading-screen{
-
     position:absolute;
-
-    left:0;
-    top:0;
-
-    width:100%;
-    height:100%;
-
+    inset:0;
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     align-items:center;
-
-    background:linear-gradient(#0a0a0a,#000);
-
-    z-index:9999;
+    background:#000;
+    z-index:100;
 }
 
 #loading-logo{
-
-    font-size:54px;
-
     color:#00ffff;
-
     font-family:Arial;
-
+    font-size:52px;
     font-weight:bold;
-
-    margin-bottom:60px;
-
-    letter-spacing:5px;
-
+    margin-bottom:50px;
     text-shadow:
         0 0 10px cyan,
         0 0 20px cyan,
@@ -87,54 +67,36 @@ body{
 }
 
 #loading-bar{
-
     width:420px;
-
     max-width:80%;
-
-    height:20px;
-
+    height:22px;
     background:#222;
-
-    border-radius:30px;
-
+    border-radius:20px;
     overflow:hidden;
 }
 
 #loading-fill{
-
     width:0%;
-
     height:100%;
-
     background:#00ffff;
-
-    transition:width .15s;
+    transition:width .2s;
 }
 
 #loading-percent{
-
-    color:white;
-
-    font-size:24px;
-
-    font-family:Arial;
-
     margin-top:20px;
+    color:#fff;
+    font-family:Arial;
+    font-size:24px;
 }
 
 #loading-text{
-
-    color:#cccccc;
-
-    font-size:18px;
-
-    margin-top:15px;
-
+    margin-top:10px;
+    color:#aaa;
     font-family:Arial;
+    font-size:18px;
 }
 
-@media(max-width:768px){
+@media (max-width:768px){
 
 #loading-logo{
     font-size:34px;
@@ -184,24 +146,22 @@ body{
 
 <script>
 
-const canvas=document.querySelector("#unity-canvas");
+const canvas = document.querySelector("#unity-canvas");
+const container = document.querySelector("#unity-container");
 
-const buildUrl="Build";
+const buildUrl = "Build";
 
-const loaderUrl=buildUrl+"/9e4c0029f1a984faa0f151100328293e.loader.js";
+const loaderUrl = buildUrl + "/9e4c0029f1a984faa0f151100328293e.loader.js";
 
-const config={
+const config = {
 
     arguments:[],
 
-    dataUrl:
-    buildUrl+"/6407da22cfbb29a7b8399c237d264852.data.unityweb",
+    dataUrl:buildUrl+"/6407da22cfbb29a7b8399c237d264852.data.unityweb",
 
-    frameworkUrl:
-    buildUrl+"/739e84563b41c627d2729d83354daf37.framework.js.unityweb",
+    frameworkUrl:buildUrl+"/739e84563b41c627d2729d83354daf37.framework.js.unityweb",
 
-    codeUrl:
-    buildUrl+"/1a44bdad9a3855b21c3652f9cc787373.wasm.unityweb",
+    codeUrl:buildUrl+"/1a44bdad9a3855b21c3652f9cc787373.wasm.unityweb",
 
     streamingAssetsUrl:"StreamingAssets",
 
@@ -214,33 +174,57 @@ const config={
     devicePixelRatio:1
 };
 
-function resizeCanvas(){
+function resizeGame()
+{
+    const aspect = 960 / 600;
 
-    canvas.style.width=window.innerWidth+"px";
-    canvas.style.height=window.innerHeight+"px";
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if(mobile)
+    {
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+
+        let width = w;
+        let height = width / aspect;
+
+        if(height > h)
+        {
+            height = h;
+            width = height * aspect;
+        }
+
+        container.style.width = width + "px";
+        container.style.height = height + "px";
+
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+    }
+    else
+    {
+        container.style.width = "960px";
+        container.style.height = "600px";
+
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+    }
 }
 
-resizeCanvas();
+resizeGame();
 
-window.addEventListener("resize",resizeCanvas);
+window.addEventListener("resize", resizeGame);
 
-window.addEventListener("orientationchange",function(){
-
-    setTimeout(resizeCanvas,300);
-
-});
-
-canvas.addEventListener("contextmenu",function(e){
-
-    e.preventDefault();
-
+window.addEventListener("orientationchange", function(){
+    setTimeout(resizeGame,300);
 });
 
 document.body.addEventListener("touchmove",function(e){
-
     e.preventDefault();
-
 },{passive:false});
+
+canvas.addEventListener("contextmenu",function(e){
+    e.preventDefault();
+});
 
 const script=document.createElement("script");
 
@@ -249,11 +233,8 @@ script.src=loaderUrl;
 script.onload=function(){
 
 createUnityInstance(
-
 canvas,
-
 config,
-
 function(progress){
 
 progress=Math.floor(progress*100);
@@ -263,7 +244,6 @@ document.getElementById("loading-fill").style.width=progress+"%";
 document.getElementById("loading-percent").innerHTML=progress+"%";
 
 }
-
 )
 
 .then(function(unityInstance){
