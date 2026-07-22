@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -8,8 +8,7 @@
 <title>Lil Taz Runner</title>
 
 <meta name="viewport"
-content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
 <style>
 
 html,
@@ -20,7 +19,8 @@ body{
     height:100%;
     overflow:hidden;
     background:#000;
-    touch-action:none;
+    touch-action:manipulation;
+    position:relative;
 }
 
 body{
@@ -36,9 +36,8 @@ body{
 }
 
 #unity-canvas{
-    display:block;
-    background:#000;
-    outline:none;
+    width:100%;
+    height:100%;
 }
 
 /* Loading Screen */
@@ -96,6 +95,69 @@ body{
     font-size:18px;
 }
 
+/* Landscape rotation prompt */
+#rotate-prompt {
+    position:fixed;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:#000;
+    z-index:999;
+    color:#fff;
+    font-family:Arial;
+    text-align:center;
+    padding:40px;
+}
+
+#rotate-prompt.show {
+    display:flex;
+}
+
+#rotate-prompt .icon {
+    font-size:80px;
+    margin-bottom:30px;
+    animation: rotate-phone 2s ease-in-out infinite;
+}
+
+#rotate-prompt h2 {
+    color:#00ffff;
+    font-size:28px;
+    margin-bottom:10px;
+    text-shadow:0 0 20px rgba(0,255,255,0.3);
+}
+
+#rotate-prompt p {
+    color:#8a9aaa;
+    font-size:18px;
+    max-width:400px;
+    line-height:1.5;
+}
+
+@keyframes rotate-phone {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+}
+
+@media (max-width:768px) and (orientation:portrait) {
+    #rotate-prompt.show {
+        display:flex !important;
+    }
+    #unity-container {
+        display:none !important;
+    }
+}
+
+@media (max-width:768px) and (orientation:landscape) {
+    #rotate-prompt.show {
+        display:none !important;
+    }
+    #unity-container {
+        display:block !important;
+    }
+}
+
 @media (max-width:768px){
 
 #loading-logo{
@@ -117,6 +179,13 @@ body{
 </head>
 
 <body>
+
+<!-- Landscape Rotation Prompt -->
+<div id="rotate-prompt" class="show">
+    <div class="icon">📱</div>
+    <h2>ROTATE DEVICE</h2>
+    <p>Please rotate your phone to landscape mode to play</p>
+</div>
 
 <div id="unity-container">
 
@@ -146,124 +215,243 @@ body{
 
 <script>
 
+// --- FIXED: Better keyboard handling ---
+
+// Lock body to prevent scrolling
+
+
+// --- FORCE LANDSCAPE ON MOBILE ---
+function checkOrientation() {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const prompt = document.getElementById('rotate-prompt');
+    const container = document.getElementById('unity-container');
+    
+    if (isMobile) {
+        // Use window dimensions for orientation check
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        
+        if (h > w) {
+            // Portrait mode - show prompt, hide game
+            prompt.classList.add('show');
+            container.style.display = 'none';
+        } else {
+            // Landscape mode - hide prompt, show game
+            prompt.classList.remove('show');
+            container.style.display = 'block';
+        }
+    } else {
+        // Desktop - always hide prompt
+        prompt.classList.remove('show');
+        container.style.display = 'block';
+    }
+}
+
+// Check on load
+setTimeout(checkOrientation, 100);
+
+// Check on resize and orientation change
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', function() {
+    setTimeout(checkOrientation, 500);
+});
+
+// --- ORIGINAL GAME CODE ---
 const canvas = document.querySelector("#unity-canvas");
 const container = document.querySelector("#unity-container");
 
 const buildUrl = "Build";
 
-const loaderUrl = buildUrl + "/370192a3d6b55ff51b71657dc7059ce7.loader.js";
+const loaderUrl = buildUrl + "/dedad74a7cb0fd06b81908e2476fe7d9.loader.js";
 
 const config = {
 
     arguments:[],
 
-    dataUrl:buildUrl+"/073944ef5bdb07aa48d8fc72c75e6d49.data.unityweb",
+    dataUrl:buildUrl+"/fdee9ce21497a6e628bbc520e2d560d2.data.unityweb",
 
-    frameworkUrl:buildUrl+"/739e84563b41c627d2729d83354daf37.framework.js.unityweb",
+    frameworkUrl:buildUrl+"/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
 
-    codeUrl:buildUrl+"/192a8e7fe141e65a20f416fad3b56bd2.wasm.unityweb",
+    codeUrl:buildUrl+"/75317a312c9fbb5b6bcf6c3527293ff4.wasm.unityweb",
 
     streamingAssetsUrl:"StreamingAssets",
 
     companyName:"DefaultCompany",
 
-
     productName:"LilTazRunner",
 
     productVersion:"1.0",
 
-    devicePixelRatio:1
+    devicePixelRatio:1,
+    
+    // Critical: Add this to preserve drawing buffer for screenshots
+    preserveDrawingBuffer: true
 };
 
-function resizeGame()
-{
-    const aspect = 960 / 600;
+const GAME_WIDTH = 960;
+const GAME_HEIGHT = 600;
+const GAME_RATIO = GAME_WIDTH / GAME_HEIGHT;
+// --- FIXED: Better keyboard-aware resize ---
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+function resizeGame() {
 
-    if(mobile)
-    {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
+    if (isMobile) {
 
-        let width = w;
-        let height = width / aspect;
+    let vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+    let vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
-        if(height > h)
-        {
-            height = h;
-            width = height * aspect;
-        }
+    let width = vw;
+    let height = width / GAME_RATIO;
 
-        container.style.width = width + "px";
-        container.style.height = height + "px";
-
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
+    if (height > vh) {
+        height = vh;
+        width = height * GAME_RATIO;
     }
-    else
-    {
-        container.style.width = "960px";
-        container.style.height = "600px";
 
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+    container.style.position = "absolute";
+    container.style.left = ((vw - width) * 0.5) + "px";
+    container.style.top = ((vh - height) * 0.5) + "px";
+    container.style.width = width + "px";
+    container.style.height = height + "px";
+    container.style.transform = "none";
+
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+
+    } else {
+
+        const w = Math.min(960, window.innerWidth);
+        const h = w * 600 / 960;
+
+        container.style.position = "relative";
+        container.style.left = "0";
+        container.style.top = "0";
+        container.style.transform = "none";
+
+        container.style.width = w + "px";
+        container.style.height = h + "px";
+
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
     }
 }
-
+// Initial resize
 resizeGame();
 
-window.addEventListener("resize", resizeGame);
-
-window.addEventListener("orientationchange", function(){
-    setTimeout(resizeGame,300);
-});
-
-document.body.addEventListener("touchmove",function(e){
-    e.preventDefault();
-},{passive:false});
-
-canvas.addEventListener("contextmenu",function(e){
-    e.preventDefault();
-});
-
-const script=document.createElement("script");
-
-script.src=loaderUrl;
-
-script.onload=function(){
-
-createUnityInstance(
-canvas,
-config,
-function(progress){
-
-progress=Math.floor(progress*100);
-
-document.getElementById("loading-fill").style.width=progress+"%";
-
-document.getElementById("loading-percent").innerHTML=progress+"%";
-
+// Handle resize events with debounce for better performance
+let resizeTimeout;
+function handleResize() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function() {
+        resizeGame();
+        // Also check orientation after resize
+        checkOrientation();
+    }, 100);
 }
-)
 
-.then(function(unityInstance){
+// Use both resize and visualViewport events
+window.addEventListener('resize', handleResize);
 
-window.unityInstance=unityInstance;
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', handleResize);
+    window.visualViewport.addEventListener('scroll', handleResize);
+}
 
-document.getElementById("loading-screen").style.display="none";
-
-})
-
-.catch(function(message){
-
-alert(message);
-
+window.addEventListener('orientationchange', function() {
+    setTimeout(function() {
+        resizeGame();
+        checkOrientation();
+    }, 500);
 });
 
+// Prevent context menu on canvas
+canvas.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// --- FIX: Keep game visible when keyboard opens ---
+// When an input field is focused, ensure the game stays visible
+document.addEventListener('focusin', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        // Input focused, wait a moment then resize
+        setTimeout(resizeGame, 300);
+    }
+});
+
+document.addEventListener('focusout', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        // Input blurred, resize back
+        setTimeout(resizeGame, 300);
+    }
+});
+
+// --- LOAD THE GAME ---
+const script = document.createElement("script");
+script.src = loaderUrl;
+script.onload = function() {
+
+    // Merge config with preserveDrawingBuffer
+    const finalConfig = {
+        ...config,
+        preserveDrawingBuffer: true
+    };
+
+    createUnityInstance(
+        canvas,
+        finalConfig,
+        function(progress) {
+            progress = Math.floor(progress * 100);
+            document.getElementById("loading-fill").style.width = progress + "%";
+            document.getElementById("loading-percent").innerHTML = progress + "%";
+        }
+    )
+    .then(function(unityInstance) {
+        window.unityInstance = unityInstance;
+        document.getElementById("loading-screen").style.display = "none";
+        
+        // After loading, ensure proper sizing
+        setTimeout(resizeGame, 100);
+    })
+    .catch(function(message) {
+        alert(message);
+    });
 };
 
 document.body.appendChild(script);
+
+// --- ADDITIONAL FIX: Handle keyboard show/hide on mobile ---
+// Some Android browsers show keyboard differently
+if (/Android/i.test(navigator.userAgent)) {
+    // For Android, also listen to visibility change
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            setTimeout(resizeGame, 300);
+        }
+    });
+    
+    // Android Chrome specific: listen to scroll events that might be from keyboard
+    window.addEventListener('scroll', function() {
+        // Only if we're in landscape mode
+        if (window.innerWidth > window.innerHeight) {
+            setTimeout(resizeGame, 100);
+        }
+    }, { passive: true });
+}
+
+// --- FIX: iOS Safari specific ---
+if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    // iOS Safari needs this to prevent zoom and scrolling
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    });
+    
+    // iOS keyboard fix
+    window.addEventListener('resize', function() {
+        // iOS sometimes needs a longer delay
+        setTimeout(resizeGame, 500);
+    });
+}
 
 </script>
 
