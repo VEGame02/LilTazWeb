@@ -2,458 +2,460 @@
 <html lang="en">
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-<title>Lil Taz Runner</title>
+    <title>Lil Taz Runner</title>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
-<style>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+    <style>
 
-html,
-body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#000;
-    touch-action:manipulation;
-    position:relative;
-}
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            touch-action: manipulation;
+            position: relative;
+        }
 
-body{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-#unity-container{
-    position:relative;
-    background:#000;
-    overflow:hidden;
-}
+        #unity-container {
+            position: relative;
+            background: #000;
+            overflow: hidden;
+        }
 
-#unity-canvas{
-    width:100%;
-    height:100%;
-}
+        #unity-canvas {
+            width: 100%;
+            height: 100%;
+        }
 
-/* Loading Screen */
+        /* Loading Screen */
 
-#loading-screen{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    background:#000;
-    z-index:100;
-}
+        #loading-screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 100;
+        }
 
-#loading-logo{
-    color:#00ffff;
-    font-family:Arial;
-    font-size:52px;
-    font-weight:bold;
-    margin-bottom:50px;
-    text-shadow:
-        0 0 10px cyan,
-        0 0 20px cyan,
-        0 0 40px cyan;
-}
+        #loading-logo {
+            color: #00ffff;
+            font-family: Arial;
+            font-size: 52px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 40px cyan;
+        }
 
-#loading-bar{
-    width:420px;
-    max-width:80%;
-    height:22px;
-    background:#222;
-    border-radius:20px;
-    overflow:hidden;
-}
+        #loading-bar {
+            width: 420px;
+            max-width: 80%;
+            height: 22px;
+            background: #222;
+            border-radius: 20px;
+            overflow: hidden;
+        }
 
-#loading-fill{
-    width:0%;
-    height:100%;
-    background:#00ffff;
-    transition:width .2s;
-}
+        #loading-fill {
+            width: 0%;
+            height: 100%;
+            background: #00ffff;
+            transition: width .2s;
+        }
 
-#loading-percent{
-    margin-top:20px;
-    color:#fff;
-    font-family:Arial;
-    font-size:24px;
-}
+        #loading-percent {
+            margin-top: 20px;
+            color: #fff;
+            font-family: Arial;
+            font-size: 24px;
+        }
 
-#loading-text{
-    margin-top:10px;
-    color:#aaa;
-    font-family:Arial;
-    font-size:18px;
-}
+        #loading-text {
+            margin-top: 10px;
+            color: #aaa;
+            font-family: Arial;
+            font-size: 18px;
+        }
 
-/* Landscape rotation prompt */
-#rotate-prompt {
-    position:fixed;
-    inset:0;
-    display:none;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    background:#000;
-    z-index:999;
-    color:#fff;
-    font-family:Arial;
-    text-align:center;
-    padding:40px;
-}
+        /* Landscape rotation prompt */
+        #rotate-prompt {
+            position: fixed;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 999;
+            color: #fff;
+            font-family: Arial;
+            text-align: center;
+            padding: 40px;
+        }
 
-#rotate-prompt.show {
-    display:flex;
-}
+            #rotate-prompt.show {
+                display: flex;
+            }
 
-#rotate-prompt .icon {
-    font-size:80px;
-    margin-bottom:30px;
-    animation: rotate-phone 2s ease-in-out infinite;
-}
+            #rotate-prompt .icon {
+                font-size: 80px;
+                margin-bottom: 30px;
+                animation: rotate-phone 2s ease-in-out infinite;
+            }
 
-#rotate-prompt h2 {
-    color:#00ffff;
-    font-size:28px;
-    margin-bottom:10px;
-    text-shadow:0 0 20px rgba(0,255,255,0.3);
-}
+            #rotate-prompt h2 {
+                color: #00ffff;
+                font-size: 28px;
+                margin-bottom: 10px;
+                text-shadow: 0 0 20px rgba(0,255,255,0.3);
+            }
 
-#rotate-prompt p {
-    color:#8a9aaa;
-    font-size:18px;
-    max-width:400px;
-    line-height:1.5;
-}
+            #rotate-prompt p {
+                color: #8a9aaa;
+                font-size: 18px;
+                max-width: 400px;
+                line-height: 1.5;
+            }
 
-@keyframes rotate-phone {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(90deg); }
-}
+        @keyframes rotate-phone {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
 
-@media (max-width:768px) and (orientation:portrait) {
-    #rotate-prompt.show {
-        display:flex !important;
-    }
-    #unity-container {
-        display:none !important;
-    }
-}
+            50% {
+                transform: rotate(90deg);
+            }
+        }
 
-@media (max-width:768px) and (orientation:landscape) {
-    #rotate-prompt.show {
-        display:none !important;
-    }
-    #unity-container {
-        display:block !important;
-    }
-}
+        @media (max-width:768px) and (orientation:portrait) {
+            #rotate-prompt.show {
+                display: flex !important;
+            }
 
-@media (max-width:768px){
+            #unity-container {
+                display: none !important;
+            }
+        }
 
-#loading-logo{
-    font-size:34px;
-}
+        @media (max-width:768px) and (orientation:landscape) {
+            #rotate-prompt.show {
+                display: none !important;
+            }
 
-#loading-bar{
-    width:280px;
-}
+            #unity-container {
+                display: block !important;
+            }
+        }
 
-#loading-percent{
-    font-size:18px;
-}
+        @media (max-width:768px) {
 
-}
+            #loading-logo {
+                font-size: 34px;
+            }
 
-</style>
+            #loading-bar {
+                width: 280px;
+            }
+
+            #loading-percent {
+                font-size: 18px;
+            }
+        }
+    </style>
 
 </head>
 
 <body>
 
-<!-- Landscape Rotation Prompt -->
-<div id="rotate-prompt" class="show">
-    <div class="icon">📱</div>
-    <h2>ROTATE DEVICE</h2>
-    <p>Please rotate your phone to landscape mode to play</p>
-</div>
+    <!-- Landscape Rotation Prompt -->
+    <div id="rotate-prompt" class="show">
+        <div class="icon">📱</div>
+        <h2>ROTATE DEVICE</h2>
+        <p>Please rotate your phone to landscape mode to play</p>
+    </div>
 
-<div id="unity-container">
+    <div id="unity-container">
 
-    <canvas id="unity-canvas" tabindex="-1"></canvas>
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
 
-    <div id="loading-screen">
+        <div id="loading-screen">
 
-        <div id="loading-logo">
-            LIL TAZ RUNNER
-        </div>
+            <div id="loading-logo">
+                LIL TAZ RUNNER
+            </div>
 
-        <div id="loading-bar">
-            <div id="loading-fill"></div>
-        </div>
+            <div id="loading-bar">
+                <div id="loading-fill"></div>
+            </div>
 
-        <div id="loading-percent">
-            0%
-        </div>
+            <div id="loading-percent">
+                0%
+            </div>
 
-        <div id="loading-text">
-            Loading...
+            <div id="loading-text">
+                Loading...
+            </div>
+
         </div>
 
     </div>
 
-</div>
+    <script>
 
-<script>
+        // --- FIXED: Better keyboard handling ---
 
-// --- FIXED: Better keyboard handling ---
-
-// Lock body to prevent scrolling
+        // Lock body to prevent scrolling
 
 
-// --- FORCE LANDSCAPE ON MOBILE ---
-function checkOrientation() {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const prompt = document.getElementById('rotate-prompt');
-    const container = document.getElementById('unity-container');
-    
-    if (isMobile) {
-        // Use window dimensions for orientation check
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        
-        if (h > w) {
-            // Portrait mode - show prompt, hide game
-            prompt.classList.add('show');
-            container.style.display = 'none';
-        } else {
-            // Landscape mode - hide prompt, show game
-            prompt.classList.remove('show');
-            container.style.display = 'block';
+        // --- FORCE LANDSCAPE ON MOBILE ---
+        function checkOrientation() {
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const prompt = document.getElementById('rotate-prompt');
+            const container = document.getElementById('unity-container');
+
+            if (isMobile) {
+                // Use window dimensions for orientation check
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+
+                if (h > w) {
+                    // Portrait mode - show prompt, hide game
+                    prompt.classList.add('show');
+                    container.style.display = 'none';
+                } else {
+                    // Landscape mode - hide prompt, show game
+                    prompt.classList.remove('show');
+                    container.style.display = 'block';
+                }
+            } else {
+                // Desktop - always hide prompt
+                prompt.classList.remove('show');
+                container.style.display = 'block';
+            }
         }
-    } else {
-        // Desktop - always hide prompt
-        prompt.classList.remove('show');
-        container.style.display = 'block';
-    }
-}
 
-// Check on load
-setTimeout(checkOrientation, 100);
+        // Check on load
+        setTimeout(checkOrientation, 100);
 
-// Check on resize and orientation change
-window.addEventListener('resize', checkOrientation);
-window.addEventListener('orientationchange', function() {
-    setTimeout(checkOrientation, 500);
-});
+        // Check on resize and orientation change
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', function () {
+            setTimeout(checkOrientation, 500);
+        });
 
-// --- ORIGINAL GAME CODE ---
-const canvas = document.querySelector("#unity-canvas");
-const container = document.querySelector("#unity-container");
+        // --- ORIGINAL GAME CODE ---
+        const canvas = document.querySelector("#unity-canvas");
+        const container = document.querySelector("#unity-container");
 
-const buildUrl = "Build";
+        const buildUrl = "Build";
 
-    const loaderUrl = buildUrl + "/ddc874feedfb5c031adcf6cf39934440.loader.js";
+        const loaderUrl = buildUrl + "/6ef77d059cfb42fc2773476b99c37838.loader.js";
 
-const config = {
+        const config = {
 
-    arguments:[],
+            arguments: [],
 
-    dataUrl: buildUrl +"/25de6c878b5962dfe081b2cf8d19a2b6.data.unityweb",
+            dataUrl: buildUrl + "/a4f43f6739b9c08b3a9de6c989bf239c.data.unityweb",
 
-    frameworkUrl: buildUrl +"/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
+            frameworkUrl: buildUrl + "/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
 
-    codeUrl: buildUrl +"/626ce83d1840bd3c537865fd91f4e4ae.wasm.unityweb",
+            codeUrl: buildUrl + "/330a409d9e2654bfbd50bd5cbd85408a.wasm.unityweb",
 
-    streamingAssetsUrl:"StreamingAssets",
+            streamingAssetsUrl: "StreamingAssets",
 
-    companyName:"DefaultCompany",
+            companyName: "DefaultCompany",
 
-    productName:"LilTazRunner",
+            productName: "LilTazRunner",
 
-    productVersion:"1.0",
+            productVersion: "1.0",
 
-    devicePixelRatio:1,
-    
-    // Critical: Add this to preserve drawing buffer for screenshots
-    preserveDrawingBuffer: true
-    };
+            devicePixelRatio: 1,
 
-const GAME_WIDTH = 960;
-const GAME_HEIGHT = 600;
-const GAME_RATIO = GAME_WIDTH / GAME_HEIGHT;
-// --- FIXED: Better keyboard-aware resize ---
-const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            // Critical: Add this to preserve drawing buffer for screenshots
+            preserveDrawingBuffer: true
+        };
 
-function resizeGame() {
+        const GAME_WIDTH = 960;
+        const GAME_HEIGHT = 600;
+        const GAME_RATIO = GAME_WIDTH / GAME_HEIGHT;
+        // --- FIXED: Better keyboard-aware resize ---
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    if (isMobile) {
+        function resizeGame() {
 
-    let vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    let vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            if (isMobile) {
 
-    let width = vw;
-    let height = width / GAME_RATIO;
+                let vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+                let vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
-    if (height > vh) {
-        height = vh;
-        width = height * GAME_RATIO;
-    }
+                let width = vw;
+                let height = width / GAME_RATIO;
 
-    container.style.position = "absolute";
-    container.style.left = ((vw - width) * 0.5) + "px";
-    container.style.top = ((vh - height) * 0.5) + "px";
-    container.style.width = width + "px";
-    container.style.height = height + "px";
-    container.style.transform = "none";
+                if (height > vh) {
+                    height = vh;
+                    width = height * GAME_RATIO;
+                }
 
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
+                container.style.position = "absolute";
+                container.style.left = ((vw - width) * 0.5) + "px";
+                container.style.top = ((vh - height) * 0.5) + "px";
+                container.style.width = width + "px";
+                container.style.height = height + "px";
+                container.style.transform = "none";
 
-    } else {
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
 
-        const w = Math.min(960, window.innerWidth);
-        const h = w * 600 / 960;
+            } else {
 
-        container.style.position = "relative";
-        container.style.left = "0";
-        container.style.top = "0";
-        container.style.transform = "none";
+                const w = Math.min(960, window.innerWidth);
+                const h = w * 600 / 960;
 
-        container.style.width = w + "px";
-        container.style.height = h + "px";
+                container.style.position = "relative";
+                container.style.left = "0";
+                container.style.top = "0";
+                container.style.transform = "none";
 
-        canvas.style.width = w + "px";
-        canvas.style.height = h + "px";
-    }
-}
-// Initial resize
-resizeGame();
+                container.style.width = w + "px";
+                container.style.height = h + "px";
 
-// Handle resize events with debounce for better performance
-let resizeTimeout;
-function handleResize() {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(function() {
+                canvas.style.width = w + "px";
+                canvas.style.height = h + "px";
+            }
+        }
+        // Initial resize
         resizeGame();
-        // Also check orientation after resize
-        checkOrientation();
-    }, 100);
-}
 
-// Use both resize and visualViewport events
-window.addEventListener('resize', handleResize);
-
-if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', handleResize);
-    window.visualViewport.addEventListener('scroll', handleResize);
-}
-
-window.addEventListener('orientationchange', function() {
-    setTimeout(function() {
-        resizeGame();
-        checkOrientation();
-    }, 500);
-});
-
-// Prevent context menu on canvas
-canvas.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-
-// --- FIX: Keep game visible when keyboard opens ---
-// When an input field is focused, ensure the game stays visible
-document.addEventListener('focusin', function(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        // Input focused, wait a moment then resize
-        setTimeout(resizeGame, 300);
-    }
-});
-
-document.addEventListener('focusout', function(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        // Input blurred, resize back
-        setTimeout(resizeGame, 300);
-    }
-});
-
-// --- LOAD THE GAME ---
-const script = document.createElement("script");
-script.src = loaderUrl;
-script.onload = function() {
-
-    // Merge config with preserveDrawingBuffer
-    const finalConfig = {
-        ...config,
-        preserveDrawingBuffer: true
-    };
-
-    createUnityInstance(
-        canvas,
-        finalConfig,
-        function(progress) {
-            progress = Math.floor(progress * 100);
-            document.getElementById("loading-fill").style.width = progress + "%";
-            document.getElementById("loading-percent").innerHTML = progress + "%";
+        // Handle resize events with debounce for better performance
+        let resizeTimeout;
+        function handleResize() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () {
+                resizeGame();
+                // Also check orientation after resize
+                checkOrientation();
+            }, 100);
         }
-    )
-    .then(function(unityInstance) {
-        window.unityInstance = unityInstance;
-        document.getElementById("loading-screen").style.display = "none";
-        
-        // After loading, ensure proper sizing
-        setTimeout(resizeGame, 100);
-    })
-    .catch(function(message) {
-        alert(message);
-    });
-};
 
-document.body.appendChild(script);
+        // Use both resize and visualViewport events
+        window.addEventListener('resize', handleResize);
 
-// --- ADDITIONAL FIX: Handle keyboard show/hide on mobile ---
-// Some Android browsers show keyboard differently
-if (/Android/i.test(navigator.userAgent)) {
-    // For Android, also listen to visibility change
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-            setTimeout(resizeGame, 300);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleResize);
+            window.visualViewport.addEventListener('scroll', handleResize);
         }
-    });
-    
-    // Android Chrome specific: listen to scroll events that might be from keyboard
-    window.addEventListener('scroll', function() {
-        // Only if we're in landscape mode
-        if (window.innerWidth > window.innerHeight) {
-            setTimeout(resizeGame, 100);
+
+        window.addEventListener('orientationchange', function () {
+            setTimeout(function () {
+                resizeGame();
+                checkOrientation();
+            }, 500);
+        });
+
+        // Prevent context menu on canvas
+        canvas.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        // --- FIX: Keep game visible when keyboard opens ---
+        // When an input field is focused, ensure the game stays visible
+        document.addEventListener('focusin', function (e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                // Input focused, wait a moment then resize
+                setTimeout(resizeGame, 300);
+            }
+        });
+
+        document.addEventListener('focusout', function (e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                // Input blurred, resize back
+                setTimeout(resizeGame, 300);
+            }
+        });
+
+        // --- LOAD THE GAME ---
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = function () {
+
+            // Merge config with preserveDrawingBuffer
+            const finalConfig = {
+                ...config,
+                preserveDrawingBuffer: true
+            };
+
+            createUnityInstance(
+                canvas,
+                finalConfig,
+                function (progress) {
+                    progress = Math.floor(progress * 100);
+                    document.getElementById("loading-fill").style.width = progress + "%";
+                    document.getElementById("loading-percent").innerHTML = progress + "%";
+                }
+            )
+                .then(function (unityInstance) {
+                    window.unityInstance = unityInstance;
+                    document.getElementById("loading-screen").style.display = "none";
+
+                    // After loading, ensure proper sizing
+                    setTimeout(resizeGame, 100);
+                })
+                .catch(function (message) {
+                    alert(message);
+                });
+        };
+
+        document.body.appendChild(script);
+
+        // --- ADDITIONAL FIX: Handle keyboard show/hide on mobile ---
+        // Some Android browsers show keyboard differently
+        if (/Android/i.test(navigator.userAgent)) {
+            // For Android, also listen to visibility change
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden) {
+                    setTimeout(resizeGame, 300);
+                }
+            });
+
+            // Android Chrome specific: listen to scroll events that might be from keyboard
+            window.addEventListener('scroll', function () {
+                // Only if we're in landscape mode
+                if (window.innerWidth > window.innerHeight) {
+                    setTimeout(resizeGame, 100);
+                }
+            }, { passive: true });
         }
-    }, { passive: true });
-}
 
-// --- FIX: iOS Safari specific ---
-if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-    // iOS Safari needs this to prevent zoom and scrolling
-    document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-    });
-    
-    // iOS keyboard fix
-    window.addEventListener('resize', function() {
-        // iOS sometimes needs a longer delay
-        setTimeout(resizeGame, 500);
-    });
-}
+        // --- FIX: iOS Safari specific ---
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            // iOS Safari needs this to prevent zoom and scrolling
+            document.addEventListener('gesturestart', function (e) {
+                e.preventDefault();
+            });
 
-</script>
+            // iOS keyboard fix
+            window.addEventListener('resize', function () {
+                // iOS sometimes needs a longer delay
+                setTimeout(resizeGame, 500);
+            });
+        }
+
+    </script>
 
 </body>
 </html>
