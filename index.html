@@ -1,15 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <title>Lil Taz Runner</title>
+    <title>Lil Taz’s Rooftop Run</title>
 
     <meta name="viewport"
-          content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+          content="width=device-width,
+                   initial-scale=1,
+                   maximum-scale=1,
+                   user-scalable=no,
+                   viewport-fit=cover,
+                   interactive-widget=resizes-content">
+
+
     <style>
+
+        /* =========================================================
+           GLOBAL
+           ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
 
         html,
         body {
@@ -19,443 +35,1350 @@
             height: 100%;
             overflow: hidden;
             background: #000;
-            touch-action: manipulation;
-            position: relative;
+            touch-action: none;
+            position: fixed;
+            inset: 0;
         }
+
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #unity-container {
-            position: relative;
-            background: #000;
+            width: 100vw;
+            height: 100dvh;
             overflow: hidden;
         }
 
-        #unity-canvas {
-            width: 100%;
-            height: 100%;
+
+        /* =========================================================
+           MOBILE BACKGROUND
+
+           This is visible around the landscape Unity game
+           when the phone is held vertically.
+           ========================================================= */
+
+        #mobile-background {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100dvh;
+            background: radial-gradient( ellipse at center, #18234d 0%, #0c1230 45%, #03050d 100% );
+            z-index: 0;
+            display: none;
         }
 
-        /* Loading Screen */
+
+        /* =========================================================
+           UNITY CONTAINER
+
+           IMPORTANT:
+           Unity remains 960 x 600 / 16:10.
+           ========================================================= */
+
+        #unity-container {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 960px;
+            height: 600px;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: #000;
+            z-index: 10;
+        }
+
+
+        /* =========================================================
+           UNITY CANVAS
+           ========================================================= */
+
+        #unity-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            outline: none;
+            touch-action: none;
+        }
+
+
+        /* =========================================================
+           LOADING SCREEN
+
+           Restored from your previous version.
+           Full browser / mobile screen.
+           ========================================================= */
 
         #loading-screen {
-            position: absolute;
-            inset: 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             background: #000;
-            z-index: 100;
+            z-index: 1000;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
+
+
+        /* =========================================================
+           LOADING LOGO
+           ========================================================= */
 
         #loading-logo {
             color: #00ffff;
-            font-family: Arial;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 52px;
             font-weight: bold;
             margin-bottom: 50px;
+            text-align: center;
             text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 40px cyan;
+            line-height: 1.2;
         }
+
+
+        /* =========================================================
+           LOADING BAR
+           ========================================================= */
 
         #loading-bar {
             width: 420px;
-            max-width: 80%;
+            max-width: 80vw;
             height: 22px;
             background: #222;
             border-radius: 20px;
             overflow: hidden;
         }
 
+
         #loading-fill {
             width: 0%;
             height: 100%;
             background: #00ffff;
-            transition: width .2s;
+            transition: width 0.2s ease;
         }
+
+
+        /* =========================================================
+           LOADING PERCENT
+           ========================================================= */
 
         #loading-percent {
             margin-top: 20px;
             color: #fff;
-            font-family: Arial;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 24px;
+            text-align: center;
         }
+
+
+        /* =========================================================
+           LOADING TEXT
+           ========================================================= */
 
         #loading-text {
             margin-top: 10px;
             color: #aaa;
-            font-family: Arial;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 18px;
+            text-align: center;
         }
 
-        /* Landscape rotation prompt */
-        #rotate-prompt {
+
+        /* =========================================================
+           FULLSCREEN BUTTON
+           ========================================================= */
+
+        #unity-fullscreen-button {
             position: fixed;
-            inset: 0;
-            display: none;
-            flex-direction: column;
+            right: calc(15px + env(safe-area-inset-right));
+            bottom: calc(15px + env(safe-area-inset-bottom));
+            width: 44px;
+            height: 44px;
+            display: flex;
             justify-content: center;
             align-items: center;
-            background: #000;
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
             color: #fff;
-            font-family: Arial;
-            text-align: center;
-            padding: 40px;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 500;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
-            #rotate-prompt.show {
+
+            #unity-fullscreen-button:hover {
+                background: rgba(0, 0, 0, 0.9);
+            }
+
+
+        /* =========================================================
+           DESKTOP
+
+           Desktop stays landscape.
+           ========================================================= */
+
+        @media screen and (min-width: 769px) {
+
+            #unity-container {
+                width: min(960px, 100vw);
+                height: min(600px, 100vh);
+                aspect-ratio: 16 / 10;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE LANDSCAPE
+
+           Example:
+           844 x 390
+
+           Game becomes approximately:
+           624 x 390
+           while preserving 16:10.
+           ========================================================= */
+
+        @media screen and (max-width: 768px) and (orientation: landscape) {
+
+            #mobile-background {
+                display: block;
+            }
+
+
+            #unity-container {
+                width: 100vw;
+                height: 100dvh;
+                max-width: 100vw;
+                max-height: 100dvh;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                aspect-ratio: 16 / 10;
+            }
+
+
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+            }
+
+
+            #unity-fullscreen-button {
                 display: flex;
             }
 
-            #rotate-prompt .icon {
-                font-size: 80px;
-                margin-bottom: 30px;
-                animation: rotate-phone 2s ease-in-out infinite;
-            }
-
-            #rotate-prompt h2 {
-                color: #00ffff;
-                font-size: 28px;
-                margin-bottom: 10px;
-                text-shadow: 0 0 20px rgba(0,255,255,0.3);
-            }
-
-            #rotate-prompt p {
-                color: #8a9aaa;
-                font-size: 18px;
-                max-width: 400px;
-                line-height: 1.5;
-            }
-
-        @keyframes rotate-phone {
-            0%, 100% {
-                transform: rotate(0deg);
-            }
-
-            50% {
-                transform: rotate(90deg);
-            }
-        }
-
-        @media (max-width:768px) and (orientation:portrait) {
-            #rotate-prompt.show {
-                display: flex !important;
-            }
-
-            #unity-container {
-                display: none !important;
-            }
-        }
-
-        @media (max-width:768px) and (orientation:landscape) {
-            #rotate-prompt.show {
-                display: none !important;
-            }
-
-            #unity-container {
-                display: block !important;
-            }
-        }
-
-        @media (max-width:768px) {
 
             #loading-logo {
-                font-size: 34px;
+                font-size: 38px;
+                margin-bottom: 35px;
             }
+
 
             #loading-bar {
-                width: 280px;
+                width: 320px;
+                max-width: 75vw;
             }
 
+
             #loading-percent {
-                font-size: 18px;
+                font-size: 20px;
+            }
+
+
+            #loading-text {
+                font-size: 16px;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE PORTRAIT
+
+           IMPORTANT:
+
+           PHONE = PORTRAIT
+           UNITY GAME = LANDSCAPE
+
+           The Unity game is centered.
+           It is NEVER stretched to 9:16.
+           ========================================================= */
+
+        @media screen and (max-width: 768px) and (orientation: portrait) {
+
+            #mobile-background {
+                display: block;
+            }
+
+
+            #unity-container {
+                /*
+                 * Use phone width minus a small margin.
+                 */
+
+                width: calc(100vw - 20px);
+                /*
+                 * Maintain 960 / 600 ratio.
+                 */
+
+                height: calc( (100vw - 20px) * 600 / 960 );
+                max-width: calc(100vw - 20px);
+                max-height: calc(100dvh - 20px);
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                aspect-ratio: 16 / 10;
+            }
+
+
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+            }
+
+
+            /*
+             * Hide fullscreen button in portrait.
+             */
+
+            #unity-fullscreen-button {
+                display: none;
+            }
+
+
+            /*
+             * Loading remains full portrait screen.
+             */
+
+            #loading-logo {
+                font-size: clamp( 28px, 8vw, 40px );
+                margin-bottom: clamp( 25px, 7vw, 40px );
+                padding: 0 20px;
+            }
+
+
+            #loading-bar {
+                width: min(320px, 78vw);
+                height: 18px;
+            }
+
+
+            #loading-percent {
+                font-size: 20px;
+            }
+
+
+            #loading-text {
+                font-size: 16px;
+            }
+        }
+
+
+        /* =========================================================
+           VERY SMALL PORTRAIT PHONES
+           ========================================================= */
+
+        @media screen and (max-width: 400px) and (orientation: portrait) {
+
+            #unity-container {
+                width: calc(100vw - 12px);
+                height: calc( (100vw - 12px) * 600 / 960 );
+                max-width: calc(100vw - 12px);
+            }
+
+
+            #loading-logo {
+                font-size: 28px;
+            }
+
+
+            #loading-bar {
+                width: 260px;
+                max-width: 75vw;
+            }
+        }
+
+
+        /* =========================================================
+           SAFE AREA
+           ========================================================= */
+
+        @supports (padding: env(safe-area-inset-top)) {
+
+            #unity-container {
+                /*
+                 * Don't add padding to Unity.
+                 * Safe area is handled by viewport/background.
+                 */
             }
         }
     </style>
 
 </head>
 
+
 <body>
 
-    <!-- Landscape Rotation Prompt -->
-    <div id="rotate-prompt" class="show">
-        <div class="icon">📱</div>
-        <h2>ROTATE DEVICE</h2>
-        <p>Please rotate your phone to landscape mode to play</p>
-    </div>
+
+    <!-- =========================================================
+         BACKGROUND
+         ========================================================= -->
+
+    <div id="mobile-background"></div>
+
+
+    <!-- =========================================================
+         UNITY
+         ========================================================= -->
 
     <div id="unity-container">
 
-        <canvas id="unity-canvas" tabindex="-1"></canvas>
+        <canvas id="unity-canvas"
+                width="960"
+                height="600"
+                tabindex="-1">
+        </canvas>
 
-        <div id="loading-screen">
+    </div>
 
-            <div id="loading-logo">
-                LIL TAZ RUNNER
-            </div>
 
-            <div id="loading-bar">
-                <div id="loading-fill"></div>
-            </div>
+    <!-- =========================================================
+         LOADING SCREEN
 
-            <div id="loading-percent">
-                0%
-            </div>
+         This is the same style as your previous loading screen.
+         ========================================================= -->
 
-            <div id="loading-text">
-                Loading...
-            </div>
+    <div id="loading-screen">
 
+        <div id="loading-logo">
+            Lil Taz’s Rooftop Run
+        </div>
+
+
+        <div id="loading-bar">
+
+            <div id="loading-fill"></div>
+
+        </div>
+
+
+        <div id="loading-percent">
+            0%
+        </div>
+
+
+        <div id="loading-text">
+            Loading...
         </div>
 
     </div>
 
+
+    <!-- =========================================================
+         FULLSCREEN
+         ========================================================= -->
+
+    <div id="unity-fullscreen-button">
+        ⛶
+    </div>
+
+
     <script>
 
-        // --- FIXED: Better keyboard handling ---
 
-        // Lock body to prevent scrolling
+        /* =========================================================
+           UNITY CONFIG
 
-
-        // --- FORCE LANDSCAPE ON MOBILE ---
-        function checkOrientation() {
-            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const prompt = document.getElementById('rotate-prompt');
-            const container = document.getElementById('unity-container');
-
-            if (isMobile) {
-                // Use window dimensions for orientation check
-                const w = window.innerWidth;
-                const h = window.innerHeight;
-
-                if (h > w) {
-                    // Portrait mode - show prompt, hide game
-                    prompt.classList.add('show');
-                    container.style.display = 'none';
-                } else {
-                    // Landscape mode - hide prompt, show game
-                    prompt.classList.remove('show');
-                    container.style.display = 'block';
-                }
-            } else {
-                // Desktop - always hide prompt
-                prompt.classList.remove('show');
-                container.style.display = 'block';
-            }
-        }
-
-        // Check on load
-        setTimeout(checkOrientation, 100);
-
-        // Check on resize and orientation change
-        window.addEventListener('resize', checkOrientation);
-        window.addEventListener('orientationchange', function () {
-            setTimeout(checkOrientation, 500);
-        });
-
-        // --- ORIGINAL GAME CODE ---
-        const canvas = document.querySelector("#unity-canvas");
-        const container = document.querySelector("#unity-container");
+           SAME BUILD FILES FROM YOUR ORIGINAL HTML
+           ========================================================= */
 
         const buildUrl = "Build";
 
-        const loaderUrl = buildUrl + "/a1c12ae1b639a114b9da5236eeaf47f6.loader.js";
+
+        const loaderUrl =
+            buildUrl +
+            "/6f6fcb06d9f16f85b30da44e2cf56297.loader.js";
+
 
         const config = {
 
             arguments: [],
 
-            dataUrl: buildUrl + "/99e0a6773482382a69e3e87dc226a625.data.unityweb",
 
-            frameworkUrl: buildUrl + "/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
+            dataUrl:
+                buildUrl +
+                "/319b2e987af63c7c94c10c23e9d1e0a7.data.unityweb",
 
-            codeUrl: buildUrl + "/09d6728f07ebc24a987a0b0d8cec19f6.wasm.unityweb",
 
-            streamingAssetsUrl: "StreamingAssets",
+            frameworkUrl:
+                buildUrl +
+                "/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
 
-            companyName: "DefaultCompany",
 
-            productName: "LilTazRunner",
+            codeUrl:
+                buildUrl +
+                "/44c6109df8bc173f5a80638311bfd389.wasm.unityweb",
 
-            productVersion: "1.0",
 
-            devicePixelRatio: 1,
+            streamingAssetsUrl:
+                "StreamingAssets",
 
-            // Critical: Add this to preserve drawing buffer for screenshots
-            preserveDrawingBuffer: true
+
+            companyName:
+                "DefaultCompany",
+
+
+            productName:
+                "LilTazRunner",
+
+
+            productVersion:
+                "1.0",
+
+
+            devicePixelRatio:
+                1,
+
+
+            preserveDrawingBuffer:
+                true
         };
-    
+
+
+        /* =========================================================
+           GAME SIZE
+           ========================================================= */
+
         const GAME_WIDTH = 960;
+
         const GAME_HEIGHT = 600;
-        const GAME_RATIO = GAME_WIDTH / GAME_HEIGHT;
-        // --- FIXED: Better keyboard-aware resize ---
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        const GAME_RATIO =
+            GAME_WIDTH / GAME_HEIGHT;
+
+
+        /* =========================================================
+           ELEMENTS
+           ========================================================= */
+
+        const canvas =
+            document.getElementById(
+                "unity-canvas"
+            );
+
+
+        const container =
+            document.getElementById(
+                "unity-container"
+            );
+
+
+        const loadingScreen =
+            document.getElementById(
+                "loading-screen"
+            );
+
+
+        const loadingFill =
+            document.getElementById(
+                "loading-fill"
+            );
+
+
+        const loadingPercent =
+            document.getElementById(
+                "loading-percent"
+            );
+
+
+        const fullscreenButton =
+            document.getElementById(
+                "unity-fullscreen-button"
+            );
+
+
+        /* =========================================================
+           DEVICE
+           ========================================================= */
+
+        const isMobile =
+            /Android|iPhone|iPad|iPod/i
+                .test(navigator.userAgent);
+
+
+        /* =========================================================
+           GET VIEWPORT
+
+           visualViewport is important for mobile browsers
+           and keyboard resizing.
+           ========================================================= */
+
+        function getViewport() {
+
+            let width =
+                window.visualViewport
+                    ? window.visualViewport.width
+                    : window.innerWidth;
+
+
+            let height =
+                window.visualViewport
+                    ? window.visualViewport.height
+                    : window.innerHeight;
+
+
+            return {
+
+                width: width,
+
+                height: height
+            };
+        }
+
+
+        /* =========================================================
+           RESIZE GAME
+
+           CORE FIX:
+
+           Never stretch Unity 960x600
+           into portrait 9:16.
+
+           Always preserve 16:10.
+           ========================================================= */
 
         function resizeGame() {
 
-            if (isMobile) {
+            const viewport =
+                getViewport();
 
-                let vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-                let vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
-                let width = vw;
-                let height = width / GAME_RATIO;
+            const vw =
+                viewport.width;
 
-                if (height > vh) {
-                    height = vh;
-                    width = height * GAME_RATIO;
+
+            const vh =
+                viewport.height;
+
+
+            /* =====================================================
+               PORTRAIT MOBILE
+               ===================================================== */
+
+            if (
+                isMobile &&
+                vh > vw
+            ) {
+
+                /*
+                 * Fit game to phone WIDTH.
+                 */
+
+                let width =
+                    Math.min(
+                        vw - 20,
+                        GAME_WIDTH
+                    );
+
+
+                let height =
+                    width / GAME_RATIO;
+
+
+                /*
+                 * If height is somehow larger than
+                 * the available viewport, fit by height.
+                 */
+
+                if (
+                    height >
+                    vh - 20
+                ) {
+
+                    height =
+                        vh - 20;
+
+
+                    width =
+                        height *
+                        GAME_RATIO;
                 }
 
-                container.style.position = "absolute";
-                container.style.left = ((vw - width) * 0.5) + "px";
-                container.style.top = ((vh - height) * 0.5) + "px";
-                container.style.width = width + "px";
-                container.style.height = height + "px";
-                container.style.transform = "none";
 
-                canvas.style.width = "100%";
-                canvas.style.height = "100%";
+                /*
+                 * Center exactly.
+                 */
 
-            } else {
+                container.style.position =
+                    "fixed";
 
-                const w = Math.min(960, window.innerWidth);
-                const h = w * 600 / 960;
 
-                container.style.position = "relative";
-                container.style.left = "0";
-                container.style.top = "0";
-                container.style.transform = "none";
+                container.style.left =
+                    "50%";
 
-                container.style.width = w + "px";
-                container.style.height = h + "px";
 
-                canvas.style.width = w + "px";
-                canvas.style.height = h + "px";
+                container.style.top =
+                    "50%";
+
+
+                container.style.width =
+                    Math.floor(width) +
+                    "px";
+
+
+                container.style.height =
+                    Math.floor(height) +
+                    "px";
+
+
+                container.style.transform =
+                    "translate(-50%, -50%)";
+
+
+                canvas.style.width =
+                    "100%";
+
+
+                canvas.style.height =
+                    "100%";
+
+
+                return;
             }
+
+
+            /* =====================================================
+               MOBILE LANDSCAPE
+               ===================================================== */
+
+            if (
+                isMobile &&
+                vw > vh
+            ) {
+
+                let width =
+                    vw;
+
+
+                let height =
+                    width /
+                    GAME_RATIO;
+
+
+                /*
+                 * Fit vertically if needed.
+                 */
+
+                if (
+                    height > vh
+                ) {
+
+                    height =
+                        vh;
+
+
+                    width =
+                        height *
+                        GAME_RATIO;
+                }
+
+
+                /*
+                 * Do not exceed original resolution.
+                 */
+
+                if (
+                    width > GAME_WIDTH
+                ) {
+
+                    width =
+                        GAME_WIDTH;
+
+
+                    height =
+                        GAME_HEIGHT;
+                }
+
+
+                container.style.position =
+                    "fixed";
+
+
+                container.style.left =
+                    "50%";
+
+
+                container.style.top =
+                    "50%";
+
+
+                container.style.width =
+                    Math.floor(width) +
+                    "px";
+
+
+                container.style.height =
+                    Math.floor(height) +
+                    "px";
+
+
+                container.style.transform =
+                    "translate(-50%, -50%)";
+
+
+                canvas.style.width =
+                    "100%";
+
+
+                canvas.style.height =
+                    "100%";
+
+
+                return;
+            }
+
+
+            /* =====================================================
+               DESKTOP
+               ===================================================== */
+
+            let width =
+                Math.min(
+                    vw,
+                    GAME_WIDTH
+                );
+
+
+            let height =
+                width /
+                GAME_RATIO;
+
+
+            /*
+             * Fit desktop viewport height.
+             */
+
+            if (
+                height > vh
+            ) {
+
+                height =
+                    vh;
+
+
+                width =
+                    height *
+                    GAME_RATIO;
+            }
+
+
+            /*
+             * Final safety clamp.
+             */
+
+            width =
+                Math.min(
+                    width,
+                    GAME_WIDTH
+                );
+
+
+            height =
+                width /
+                GAME_RATIO;
+
+
+            container.style.position =
+                "fixed";
+
+
+            container.style.left =
+                "50%";
+
+
+            container.style.top =
+                "50%";
+
+
+            container.style.width =
+                Math.floor(width) +
+                "px";
+
+
+            container.style.height =
+                Math.floor(height) +
+                "px";
+
+
+            container.style.transform =
+                "translate(-50%, -50%)";
+
+
+            canvas.style.width =
+                "100%";
+
+
+            canvas.style.height =
+                "100%";
         }
-        // Initial resize
+
+
+        /* =========================================================
+           INITIAL RESIZE
+           ========================================================= */
+
         resizeGame();
 
-        // Handle resize events with debounce for better performance
-        let resizeTimeout;
+
+        /* =========================================================
+           DEBOUNCED RESIZE
+           ========================================================= */
+
+        let resizeTimeout = null;
+
+
         function handleResize() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function () {
-                resizeGame();
-                // Also check orientation after resize
-                checkOrientation();
-            }, 100);
+
+            clearTimeout(
+                resizeTimeout
+            );
+
+
+            resizeTimeout =
+                setTimeout(
+                    function () {
+
+                        resizeGame();
+
+                    },
+                    100
+                );
         }
 
-        // Use both resize and visualViewport events
-        window.addEventListener('resize', handleResize);
 
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleResize);
-            window.visualViewport.addEventListener('scroll', handleResize);
+        /* =========================================================
+           WINDOW RESIZE
+           ========================================================= */
+
+        window.addEventListener(
+            "resize",
+            handleResize,
+            {
+                passive: true
+            }
+        );
+
+
+        /* =========================================================
+           VISUAL VIEWPORT
+           ========================================================= */
+
+        if (
+            window.visualViewport
+        ) {
+
+            window.visualViewport.addEventListener(
+                "resize",
+                handleResize,
+                {
+                    passive: true
+                }
+            );
+
+
+            window.visualViewport.addEventListener(
+                "scroll",
+                handleResize,
+                {
+                    passive: true
+                }
+            );
         }
 
-        window.addEventListener('orientationchange', function () {
-            setTimeout(function () {
-                resizeGame();
-                checkOrientation();
-            }, 500);
-        });
 
-        // Prevent context menu on canvas
-        canvas.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        });
+        /* =========================================================
+           ORIENTATION CHANGE
+           ========================================================= */
 
-        // --- FIX: Keep game visible when keyboard opens ---
-        // When an input field is focused, ensure the game stays visible
-        document.addEventListener('focusin', function (e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                // Input focused, wait a moment then resize
-                setTimeout(resizeGame, 300);
+        window.addEventListener(
+            "orientationchange",
+            function () {
+
+                setTimeout(
+                    resizeGame,
+                    300
+                );
+
+
+                setTimeout(
+                    resizeGame,
+                    700
+                );
+            },
+            {
+                passive: true
             }
-        });
+        );
 
-        document.addEventListener('focusout', function (e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                // Input blurred, resize back
-                setTimeout(resizeGame, 300);
+
+        /* =========================================================
+           CANVAS CONTEXT MENU
+           ========================================================= */
+
+        canvas.addEventListener(
+            "contextmenu",
+            function (event) {
+
+                event.preventDefault();
+
             }
-        });
+        );
 
-        // --- LOAD THE GAME ---
-        const script = document.createElement("script");
-        script.src = loaderUrl;
-        script.onload = function () {
 
-            // Merge config with preserveDrawingBuffer
-            const finalConfig = {
-                ...config,
-                preserveDrawingBuffer: true
+        /* =========================================================
+           LOAD UNITY
+           ========================================================= */
+
+        const script =
+            document.createElement(
+                "script"
+            );
+
+
+        script.src =
+            loaderUrl;
+
+
+        script.onload =
+            function () {
+
+                const finalConfig = {
+
+                    ...config,
+
+                    preserveDrawingBuffer:
+                        true
+                };
+
+
+                createUnityInstance(
+
+                    canvas,
+
+                    finalConfig,
+
+                    function (progress) {
+
+                        /*
+                         * Unity progress:
+                         * 0.0 -> 1.0
+                         */
+
+                        const percent =
+                            Math.floor(
+                                progress *
+                                100
+                            );
+
+
+                        loadingFill.style.width =
+                            percent +
+                            "%";
+
+
+                        loadingPercent.textContent =
+                            percent +
+                            "%";
+
+
+                        if (
+                            percent >= 100
+                        ) {
+
+                            loadingPercent.textContent =
+                                "100%";
+                        }
+
+                    }
+
+                )
+                    .then(
+                        function (unityInstance) {
+
+                            /*
+                             * Store instance globally.
+                             */
+
+                            window.unityInstance =
+                                unityInstance;
+
+
+                            /*
+                             * Make sure final game
+                             * position is correct.
+                             */
+
+                            resizeGame();
+
+
+                            /*
+                             * Give Unity a moment to
+                             * finish its first frame.
+                             */
+
+                            setTimeout(
+                                function () {
+
+                                    loadingScreen.style.display =
+                                        "none";
+
+
+                                    resizeGame();
+
+                                },
+                                150
+                            );
+
+                        }
+                    )
+                    .catch(
+                        function (message) {
+
+                            console.error(
+                                "Unity WebGL Error:",
+                                message
+                            );
+
+
+                            loadingPercent.textContent =
+                                "Error";
+
+
+                            document.getElementById(
+                                "loading-text"
+                            ).textContent =
+                                "Unable to load game";
+
+
+                            alert(message);
+                        }
+                    );
             };
 
-            createUnityInstance(
-                canvas,
-                finalConfig,
-                function (progress) {
-                    progress = Math.floor(progress * 100);
-                    document.getElementById("loading-fill").style.width = progress + "%";
-                    document.getElementById("loading-percent").innerHTML = progress + "%";
+
+        script.onerror =
+            function () {
+
+                console.error(
+                    "Unity loader failed:",
+                    loaderUrl
+                );
+
+
+                loadingPercent.textContent =
+                    "Error";
+
+
+                document.getElementById(
+                    "loading-text"
+                ).textContent =
+                    "Unable to load game.";
+
+            };
+
+
+        document.body.appendChild(
+            script
+        );
+
+
+        /* =========================================================
+           FULLSCREEN
+           ========================================================= */
+
+        fullscreenButton.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    window.unityInstance
+                ) {
+
+                    window.unityInstance
+                        .SetFullscreen(1);
                 }
+
+            }
+        );
+
+
+        /* =========================================================
+           KEYBOARD / INPUT FOCUS
+           ========================================================= */
+
+        document.addEventListener(
+            "focusin",
+            function (event) {
+
+                if (
+                    event.target.tagName ===
+                    "INPUT" ||
+
+                    event.target.tagName ===
+                    "TEXTAREA"
+                ) {
+
+                    setTimeout(
+                        resizeGame,
+                        300
+                    );
+                }
+            }
+        );
+
+
+        document.addEventListener(
+            "focusout",
+            function (event) {
+
+                if (
+                    event.target.tagName ===
+                    "INPUT" ||
+
+                    event.target.tagName ===
+                    "TEXTAREA"
+                ) {
+
+                    setTimeout(
+                        resizeGame,
+                        300
+                    );
+                }
+            }
+        );
+
+
+        /* =========================================================
+           ANDROID
+           ========================================================= */
+
+        if (
+            /Android/i.test(
+                navigator.userAgent
             )
-                .then(function (unityInstance) {
-                    window.unityInstance = unityInstance;
-                    document.getElementById("loading-screen").style.display = "none";
+        ) {
 
-                    // After loading, ensure proper sizing
-                    setTimeout(resizeGame, 100);
-                })
-                .catch(function (message) {
-                    alert(message);
-                });
-        };
+            document.addEventListener(
+                "visibilitychange",
+                function () {
 
-        document.body.appendChild(script);
+                    if (
+                        !document.hidden
+                    ) {
 
-        // --- ADDITIONAL FIX: Handle keyboard show/hide on mobile ---
-        // Some Android browsers show keyboard differently
-        if (/Android/i.test(navigator.userAgent)) {
-            // For Android, also listen to visibility change
-            document.addEventListener('visibilitychange', function () {
-                if (!document.hidden) {
-                    setTimeout(resizeGame, 300);
+                        setTimeout(
+                            resizeGame,
+                            300
+                        );
+                    }
                 }
-            });
+            );
 
-            // Android Chrome specific: listen to scroll events that might be from keyboard
-            window.addEventListener('scroll', function () {
-                // Only if we're in landscape mode
-                if (window.innerWidth > window.innerHeight) {
-                    setTimeout(resizeGame, 100);
+
+            window.addEventListener(
+                "scroll",
+                function () {
+
+                    if (
+                        window.innerWidth >
+                        window.innerHeight
+                    ) {
+
+                        setTimeout(
+                            resizeGame,
+                            100
+                        );
+                    }
+                },
+                {
+                    passive: true
                 }
-            }, { passive: true });
+            );
         }
 
-        // --- FIX: iOS Safari specific ---
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            // iOS Safari needs this to prevent zoom and scrolling
-            document.addEventListener('gesturestart', function (e) {
-                e.preventDefault();
-            });
 
-            // iOS keyboard fix
-            window.addEventListener('resize', function () {
-                // iOS sometimes needs a longer delay
-                setTimeout(resizeGame, 500);
-            });
+        /* =========================================================
+           IOS SAFARI
+           ========================================================= */
+
+        if (
+            /iPad|iPhone|iPod/.test(
+                navigator.userAgent
+            )
+        ) {
+
+            document.addEventListener(
+                "gesturestart",
+                function (event) {
+
+                    event.preventDefault();
+
+                }
+            );
+
+
+            window.addEventListener(
+                "resize",
+                function () {
+
+                    setTimeout(
+                        resizeGame,
+                        500
+                    );
+
+                },
+                {
+                    passive: true
+                }
+            );
         }
+
+
+        /* =========================================================
+           PREVENT DOUBLE-TAP ZOOM
+           ========================================================= */
+
+        document.addEventListener(
+            "dblclick",
+            function (event) {
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false
+            }
+        );
+
 
     </script>
 
 </body>
+
 </html>
