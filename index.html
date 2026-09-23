@@ -34,7 +34,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #000;
+            background: radial-gradient(ellipse at 50% 42%, #26365d 0%, #111b38 45%, #050918 100%);
             touch-action: none;
             position: fixed;
             inset: 0;
@@ -57,13 +57,76 @@
 
         #mobile-background {
             position: fixed;
-            left: 0;
-            top: 0;
+            inset: 0;
             width: 100vw;
             height: 100dvh;
-            background: radial-gradient( ellipse at center, #18234d 0%, #0c1230 45%, #03050d 100% );
+            background: radial-gradient(ellipse at 50% 42%, #26365d 0%, #111b38 45%, #050918 100%);
             z-index: 0;
-            display: none;
+            display: block;
+            pointer-events: none;
+        }
+
+        /* Decorative city atmosphere outside the Unity game only. */
+        #city-theme {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+            background-image: radial-gradient(1px 1px at 8% 14%, #c4d2ef 99%, transparent), radial-gradient(1px 1px at 22% 33%, #b4c7ec 99%, transparent), radial-gradient(2px 2px at 78% 16%, #d4dbeb 99%, transparent), radial-gradient(1px 1px at 91% 36%, #d4dbeb 99%, transparent), radial-gradient(1px 1px at 64% 8%, #b4c7ec 99%, transparent);
+        }
+
+            #city-theme::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(ellipse at 50% 48%, rgba(83,111,170,.19), transparent 65%);
+            }
+
+        .city-skyline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: min(32vh, 270px);
+            opacity: .82;
+            background: #080e20;
+            clip-path: polygon(0 35%, 5% 35%, 5% 52%, 9% 52%, 9% 16%, 13% 16%, 13% 43%, 18% 43%, 18% 30%, 23% 30%, 23% 57%, 29% 57%, 29% 23%, 33% 23%, 33% 46%, 39% 46%, 39% 9%, 43% 9%, 43% 38%, 49% 38%, 49% 54%, 54% 54%, 54% 28%, 60% 28%, 60% 48%, 66% 48%, 66% 15%, 70% 15%, 70% 39%, 76% 39%, 76% 26%, 81% 26%, 81% 53%, 86% 53%, 86% 19%, 91% 19%, 91% 44%, 96% 44%, 96% 31%, 100% 31%, 100% 100%, 0 100%);
+        }
+
+            .city-skyline::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background-image: radial-gradient(#c18e53 1px, transparent 1.7px);
+                background-size: 23px 29px;
+                opacity: .36;
+            }
+
+        .rooftop-edge {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 14px;
+            border-top: 2px solid rgba(154,119,67,.35);
+            background: repeating-linear-gradient(110deg, #111727 0 32px, #1b2333 32px 35px);
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            #city-theme::before {
+                animation: city-glow 9s ease-in-out infinite alternate;
+            }
+
+            @keyframes city-glow {
+                from {
+                    opacity: .5;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
         }
 
 
@@ -441,6 +504,10 @@
          ========================================================= -->
 
     <div id="mobile-background"></div>
+    <div id="city-theme" aria-hidden="true">
+        <div class="city-skyline"></div>
+        <div class="rooftop-edge"></div>
+    </div>
 
 
     <!-- =========================================================
@@ -513,7 +580,7 @@
 
         const loaderUrl =
             buildUrl +
-            "/2f759c972ea0f99fa02abfa9522ea9ea.loader.js";
+            "/039a61a7911b1da09e1f0d3ce2384540.loader.js";
 
 
         const config = {
@@ -523,7 +590,7 @@
 
             dataUrl:
                 buildUrl +
-                "/7a5363f0334ec0eb3d8486e6cdf4c73a.data.unityweb",
+                "/385b940a6a7c935b1f4da98c1b143f3b.data.unityweb",
 
 
             frameworkUrl:
@@ -533,7 +600,7 @@
 
             codeUrl:
                 buildUrl +
-                "/5d11006b49a1777c8126a238e1de8d0a.wasm.unityweb",
+                "/16c3c1eb3c3c9b814ae97455e60253ab.wasm.unityweb",
 
 
             streamingAssetsUrl:
@@ -559,7 +626,7 @@
             preserveDrawingBuffer:
                 true
         };
-      
+
 
         /* =========================================================
            GAME SIZE
