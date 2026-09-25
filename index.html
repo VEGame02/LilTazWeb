@@ -613,49 +613,19 @@
            ELEMENTS
            ========================================================= */
 
-        const canvas =
-            document.getElementById(
-                "unity-canvas"
-            );
-
-
-        const container =
-            document.getElementById(
-                "unity-container"
-            );
-
-
-        const loadingScreen =
-            document.getElementById(
-                "loading-screen"
-            );
-
-
-        const loadingFill =
-            document.getElementById(
-                "loading-fill"
-            );
-
-
-        const loadingPercent =
-            document.getElementById(
-                "loading-percent"
-            );
-
-
-        const fullscreenButton =
-            document.getElementById(
-                "unity-fullscreen-button"
-            );
+        const canvas = document.getElementById("unity-canvas");
+        const container = document.getElementById("unity-container");
+        const loadingScreen = document.getElementById("loading-screen");
+        const loadingFill = document.getElementById("loading-fill");
+        const loadingPercent = document.getElementById("loading-percent");
+        const fullscreenButton = document.getElementById("unity-fullscreen-button");
 
 
         /* =========================================================
            DEVICE
            ========================================================= */
 
-        const isMobile =
-            /Android|iPhone|iPad|iPod/i
-                .test(navigator.userAgent);
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 
         /* =========================================================
@@ -667,17 +637,8 @@
 
         function getViewport() {
 
-            let width =
-                window.visualViewport
-                    ? window.visualViewport.width
-                    : window.innerWidth;
-
-
-            let height =
-                window.visualViewport
-                    ? window.visualViewport.height
-                    : window.innerHeight;
-
+            let width = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+            let height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
             return {
 
@@ -701,40 +662,23 @@
 
         function resizeGame() {
 
-            const viewport =
-                getViewport();
-
-
-            const vw =
-                viewport.width;
-
-
-            const vh =
-                viewport.height;
+            const viewport = getViewport();
+            const vw = viewport.width;
+            const vh = viewport.height;
 
 
             /* =====================================================
                PORTRAIT MOBILE
                ===================================================== */
 
-            if (
-                isMobile &&
-                vh > vw
-            ) {
+            if (isMobile && vh > vw) {
 
                 /*
                  * Fit game to phone WIDTH.
                  */
 
-                let width =
-                    Math.min(
-                        vw - 20,
-                        GAME_WIDTH
-                    );
-
-
-                let height =
-                    width / GAME_RATIO;
+                let width = Math.min(vw - 20, GAME_WIDTH);
+                let height = width / GAME_RATIO;
 
 
                 /*
@@ -742,18 +686,12 @@
                  * the available viewport, fit by height.
                  */
 
-                if (
-                    height >
-                    vh - 20
-                ) {
+                if (height > vh - 20) {
 
-                    height =
-                        vh - 20;
+                    height = vh - 20;
 
 
-                    width =
-                        height *
-                        GAME_RATIO;
+                    width = height * GAME_RATIO;
                 }
 
 
@@ -761,40 +699,14 @@
                  * Center exactly.
                  */
 
-                container.style.position =
-                    "fixed";
-
-
-                container.style.left =
-                    "50%";
-
-
-                container.style.top =
-                    "50%";
-
-
-                container.style.width =
-                    Math.floor(width) +
-                    "px";
-
-
-                container.style.height =
-                    Math.floor(height) +
-                    "px";
-
-
-                container.style.transform =
-                    "translate(-50%, -50%)";
-
-
-                canvas.style.width =
-                    "100%";
-
-
-                canvas.style.height =
-                    "100%";
-
-
+                container.style.position = "fixed";
+                container.style.left = "50%";
+                container.style.top = "50%";
+                container.style.width = Math.floor(width) + "px";
+                container.style.height = Math.floor(height) + "px";
+                container.style.transform = "translate(-50%, -50%)";
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
                 return;
             }
 
@@ -803,35 +715,20 @@
                MOBILE LANDSCAPE
                ===================================================== */
 
-            if (
-                isMobile &&
-                vw > vh
-            ) {
+            if (isMobile && vw > vh) {
 
-                let width =
-                    vw;
-
-
-                let height =
-                    width /
-                    GAME_RATIO;
+                let width = vw;
+                let height = width / GAME_RATIO;
 
 
                 /*
                  * Fit vertically if needed.
                  */
 
-                if (
-                    height > vh
-                ) {
+                if (height > vh) {
 
-                    height =
-                        vh;
-
-
-                    width =
-                        height *
-                        GAME_RATIO;
+                    height = vh;
+                    width = height * GAME_RATIO;
                 }
 
 
@@ -839,53 +736,21 @@
                  * Do not exceed original resolution.
                  */
 
-                if (
-                    width > GAME_WIDTH
-                ) {
+                if (width > GAME_WIDTH) {
 
-                    width =
-                        GAME_WIDTH;
-
-
-                    height =
-                        GAME_HEIGHT;
+                    width = GAME_WIDTH;
+                    height = GAME_HEIGHT;
                 }
 
 
-                container.style.position =
-                    "fixed";
-
-
-                container.style.left =
-                    "50%";
-
-
-                container.style.top =
-                    "50%";
-
-
-                container.style.width =
-                    Math.floor(width) +
-                    "px";
-
-
-                container.style.height =
-                    Math.floor(height) +
-                    "px";
-
-
-                container.style.transform =
-                    "translate(-50%, -50%)";
-
-
-                canvas.style.width =
-                    "100%";
-
-
-                canvas.style.height =
-                    "100%";
-
-
+                container.style.position = "fixed";
+                container.style.left = "50%";
+                container.style.top = "50%";
+                container.style.width = Math.floor(width) + "px";
+                container.style.height = Math.floor(height) + "px";
+                container.style.transform = "translate(-50%, -50%)";
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
                 return;
             }
 
@@ -894,33 +759,18 @@
                DESKTOP
                ===================================================== */
 
-            let width =
-                Math.min(
-                    vw,
-                    GAME_WIDTH
-                );
-
-
-            let height =
-                width /
-                GAME_RATIO;
+            let width = Math.min(vw, GAME_WIDTH);
+            let height = width / GAME_RATIO;
 
 
             /*
              * Fit desktop viewport height.
              */
 
-            if (
-                height > vh
-            ) {
+            if (height > vh) {
 
-                height =
-                    vh;
-
-
-                width =
-                    height *
-                    GAME_RATIO;
+                height = vh;
+                width = height * GAME_RATIO;
             }
 
 
@@ -928,50 +778,16 @@
              * Final safety clamp.
              */
 
-            width =
-                Math.min(
-                    width,
-                    GAME_WIDTH
-                );
-
-
-            height =
-                width /
-                GAME_RATIO;
-
-
-            container.style.position =
-                "fixed";
-
-
-            container.style.left =
-                "50%";
-
-
-            container.style.top =
-                "50%";
-
-
-            container.style.width =
-                Math.floor(width) +
-                "px";
-
-
-            container.style.height =
-                Math.floor(height) +
-                "px";
-
-
-            container.style.transform =
-                "translate(-50%, -50%)";
-
-
-            canvas.style.width =
-                "100%";
-
-
-            canvas.style.height =
-                "100%";
+            width = Math.min(width, GAME_WIDTH);
+            height = width / GAME_RATIO;
+            container.style.position = "fixed";
+            container.style.left = "50%";
+            container.style.top = "50%";
+            container.style.width = Math.floor(width) + "px";
+            container.style.height = Math.floor(height) + "px";
+            container.style.transform = "translate(-50%, -50%)";
+            canvas.style.width = "100%";
+            canvas.style.height = "100%";
         }
 
 
@@ -991,20 +807,8 @@
 
         function handleResize() {
 
-            clearTimeout(
-                resizeTimeout
-            );
-
-
-            resizeTimeout =
-                setTimeout(
-                    function () {
-
-                        resizeGame();
-
-                    },
-                    100
-                );
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () { resizeGame(); }, 100);
         }
 
 
@@ -1012,12 +816,9 @@
            WINDOW RESIZE
            ========================================================= */
 
-        window.addEventListener(
-            "resize",
-            handleResize,
-            {
-                passive: true
-            }
+        window.addEventListener("resize", handleResize, {
+            passive: true
+        }
         );
 
 
@@ -1025,25 +826,16 @@
            VISUAL VIEWPORT
            ========================================================= */
 
-        if (
-            window.visualViewport
-        ) {
+        if (window.visualViewport) {
 
-            window.visualViewport.addEventListener(
-                "resize",
-                handleResize,
+            window.visualViewport.addEventListener("resize", handleResize,
                 {
                     passive: true
                 }
             );
-
-
-            window.visualViewport.addEventListener(
-                "scroll",
-                handleResize,
-                {
-                    passive: true
-                }
+            window.visualViewport.addEventListener("scroll", handleResize, {
+                passive: true
+            }
             );
         }
 
@@ -1052,21 +844,11 @@
            ORIENTATION CHANGE
            ========================================================= */
 
-        window.addEventListener(
-            "orientationchange",
-            function () {
+        window.addEventListener("orientationchange", function () {
 
-                setTimeout(
-                    resizeGame,
-                    300
-                );
-
-
-                setTimeout(
-                    resizeGame,
-                    700
-                );
-            },
+            setTimeout(resizeGame, 300);
+            setTimeout(resizeGame, 700);
+        },
             {
                 passive: true
             }
@@ -1077,13 +859,10 @@
            CANVAS CONTEXT MENU
            ========================================================= */
 
-        canvas.addEventListener(
-            "contextmenu",
-            function (event) {
+        canvas.addEventListener("contextmenu", function (event) {
+            event.preventDefault();
 
-                event.preventDefault();
-
-            }
+        }
         );
 
 
@@ -1091,176 +870,86 @@
            LOAD UNITY
            ========================================================= */
 
-        const script =
-            document.createElement(
-                "script"
-            );
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = function () {
+            const finalConfig = { ...config, preserveDrawingBuffer: true };
+            createUnityInstance(canvas, finalConfig,
 
+                function (progress) {
 
-        script.src =
-            loaderUrl;
+                    /*
+                     * Unity progress:
+                     * 0.0 -> 1.0
+                     */
 
+                    const percent = Math.floor(progress * 100);
+                    loadingFill.style.width = percent + "%";
+                    loadingPercent.textContent = percent + "%";
+                    if (percent >= 100) {
 
-        script.onload =
-            function () {
-
-                const finalConfig = {
-
-                    ...config,
-
-                    preserveDrawingBuffer:
-                        true
-                };
-
-
-                createUnityInstance(
-
-                    canvas,
-
-                    finalConfig,
-
-                    function (progress) {
-
-                        /*
-                         * Unity progress:
-                         * 0.0 -> 1.0
-                         */
-
-                        const percent =
-                            Math.floor(
-                                progress *
-                                100
-                            );
-
-
-                        loadingFill.style.width =
-                            percent +
-                            "%";
-
-
-                        loadingPercent.textContent =
-                            percent +
-                            "%";
-
-
-                        if (
-                            percent >= 100
-                        ) {
-
-                            loadingPercent.textContent =
-                                "100%";
-                        }
-
+                        loadingPercent.textContent = "100%";
                     }
+                }
 
+            )
+                .then(function (unityInstance) {
+
+                    /*
+                     * Store instance globally.
+                     */
+
+                    window.unityInstance = unityInstance;
+                    /*
+                     * Make sure final game
+                     * position is correct.
+                     */
+                    resizeGame();
+                    /*
+                     * Give Unity a moment to
+                     * finish its first frame.
+                     */
+                    setTimeout(function () {
+
+                        loadingScreen.style.display = "none";
+                        resizeGame();
+                    }, 150);
+
+                }
                 )
-                    .then(
-                        function (unityInstance) {
+                .catch(function (message) {
 
-                            /*
-                             * Store instance globally.
-                             */
-
-                            window.unityInstance =
-                                unityInstance;
-
-
-                            /*
-                             * Make sure final game
-                             * position is correct.
-                             */
-
-                            resizeGame();
-
-
-                            /*
-                             * Give Unity a moment to
-                             * finish its first frame.
-                             */
-
-                            setTimeout(
-                                function () {
-
-                                    loadingScreen.style.display =
-                                        "none";
-
-
-                                    resizeGame();
-
-                                },
-                                150
-                            );
-
-                        }
-                    )
-                    .catch(
-                        function (message) {
-
-                            console.error(
-                                "Unity WebGL Error:",
-                                message
-                            );
-
-
-                            loadingPercent.textContent =
-                                "Error";
-
-
-                            document.getElementById(
-                                "loading-text"
-                            ).textContent =
-                                "Unable to load game";
-
-
-                            alert(message);
-                        }
-                    );
-            };
-
-
-        script.onerror =
-            function () {
-
-                console.error(
-                    "Unity loader failed:",
-                    loaderUrl
+                    console.error("Unity WebGL Error:", message);
+                    loadingPercent.textContent = "Error";
+                    document.getElementById("loading-text").textContent = "Unable to load game";
+                    alert(message);
+                }
                 );
+        };
 
 
-                loadingPercent.textContent =
-                    "Error";
+        script.onerror = function () {
+
+            console.error("Unity loader failed:", loaderUrl);
+            loadingPercent.textContent = "Error";
+            document.getElementById("loading-text").textContent = "Unable to load game.";
+        };
 
 
-                document.getElementById(
-                    "loading-text"
-                ).textContent =
-                    "Unable to load game.";
-
-            };
-
-
-        document.body.appendChild(
-            script
-        );
-
+        document.body.appendChild(script);
 
         /* =========================================================
            FULLSCREEN
            ========================================================= */
 
-        fullscreenButton.addEventListener(
-            "click",
-            function () {
+        fullscreenButton.addEventListener("click", function () {
 
-                if (
-                    window.unityInstance
-                ) {
+            if (window.unityInstance) {
 
-                    window.unityInstance
-                        .SetFullscreen(1);
-                }
-
+                window.unityInstance.SetFullscreen(1);
             }
+
+        }
         );
 
 
@@ -1268,45 +957,24 @@
            KEYBOARD / INPUT FOCUS
            ========================================================= */
 
-        document.addEventListener(
-            "focusin",
-            function (event) {
+        document.addEventListener("focusin", function (event) {
 
-                if (
-                    event.target.tagName ===
-                    "INPUT" ||
+            if (event.target.tagName === "INPUT" ||
+                event.target.tagName === "TEXTAREA") {
 
-                    event.target.tagName ===
-                    "TEXTAREA"
-                ) {
-
-                    setTimeout(
-                        resizeGame,
-                        300
-                    );
-                }
+                setTimeout(resizeGame, 300);
             }
+        }
         );
 
 
-        document.addEventListener(
-            "focusout",
-            function (event) {
+        document.addEventListener("focusout", function (event) {
 
-                if (
-                    event.target.tagName ===
-                    "INPUT" ||
+            if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
 
-                    event.target.tagName ===
-                    "TEXTAREA"
-                ) {
-
-                    setTimeout(
-                        resizeGame,
-                        300
-                    );
-                }
+                setTimeout(resizeGame, 300);
             }
+        }
         );
 
 
@@ -1314,44 +982,25 @@
            ANDROID
            ========================================================= */
 
-        if (
-            /Android/i.test(
-                navigator.userAgent
-            )
-        ) {
+        if (/Android/i.test(navigator.userAgent)) {
 
-            document.addEventListener(
-                "visibilitychange",
-                function () {
+            document.addEventListener("visibilitychange", function () {
 
-                    if (
-                        !document.hidden
-                    ) {
+                if (!document.hidden) {
 
-                        setTimeout(
-                            resizeGame,
-                            300
-                        );
-                    }
+                    setTimeout(resizeGame, 300);
                 }
+            }
             );
 
 
-            window.addEventListener(
-                "scroll",
-                function () {
+            window.addEventListener("scroll", function () {
 
-                    if (
-                        window.innerWidth >
-                        window.innerHeight
-                    ) {
+                if (window.innerWidth > window.innerHeight) {
 
-                        setTimeout(
-                            resizeGame,
-                            100
-                        );
-                    }
-                },
+                    setTimeout(resizeGame, 100);
+                }
+            },
                 {
                     passive: true
                 }
@@ -1363,30 +1012,18 @@
            IOS SAFARI
            ========================================================= */
 
-        if (
-            /iPad|iPhone|iPod/.test(
-                navigator.userAgent
-            )
-        ) {
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 
-            document.addEventListener(
-                "gesturestart",
-                function (event) {
+            document.addEventListener("gesturestart", function (event) {
+                event.preventDefault();
 
-                    event.preventDefault();
-
-                }
+            }
             );
 
-
-            window.addEventListener(
-                "resize",
+            window.addEventListener("resize",
                 function () {
 
-                    setTimeout(
-                        resizeGame,
-                        500
-                    );
+                    setTimeout(resizeGame, 500);
 
                 },
                 {
@@ -1400,13 +1037,9 @@
            PREVENT DOUBLE-TAP ZOOM
            ========================================================= */
 
-        document.addEventListener(
-            "dblclick",
-            function (event) {
-
-                event.preventDefault();
-
-            },
+        document.addEventListener("dblclick", function (event) {
+            event.preventDefault();
+        },
             {
                 passive: false
             }
