@@ -479,6 +479,75 @@
 
 
         /* =========================================================
+           MOBILE ONLY: PORTRAIT ROTATE OVERLAY
+           ========================================================= */
+
+        #portrait-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 24px;
+            background: #050918;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            touch-action: manipulation;
+        }
+
+        .rotate-icon {
+            font-size: 72px;
+            line-height: 1;
+            margin-bottom: 18px;
+        }
+
+        .rotate-title {
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .rotate-text {
+            max-width: 340px;
+            font-size: 16px;
+            line-height: 1.45;
+            color: #cbd4ea;
+            margin-bottom: 22px;
+        }
+
+        #rotate-fullscreen-button {
+            min-width: 220px;
+            min-height: 50px;
+            padding: 12px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #fff;
+            color: #10182d;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        @media screen and (max-width: 768px) and (orientation: portrait) {
+            #unity-container {
+                display: none !important;
+            }
+
+            #unity-fullscreen-button {
+                display: none !important;
+            }
+
+            #portrait-overlay {
+                display: flex !important;
+            }
+        }
+
+
+        /* =========================================================
            SAFE AREA
            ========================================================= */
 
@@ -565,6 +634,14 @@
         ⛶
     </div>
 
+    <!-- MOBILE ONLY: shown when the phone is held vertically -->
+    <div id="portrait-overlay">
+        <div class="rotate-icon">⟳</div>
+        <div class="rotate-title">Please rotate your phone</div>
+        <div class="rotate-text">This game is designed to play in landscape mode.</div>
+        <button id="rotate-fullscreen-button" type="button">ROTATE / FULLSCREEN</button>
+    </div>
+
 
     <script>
 
@@ -589,7 +666,7 @@
             devicePixelRatio: 1,
             preserveDrawingBuffer: true
         };
-      
+
         /* =========================================================
            GAME SIZE
            ========================================================= */
@@ -659,126 +736,71 @@
             const vw = viewport.width;
             const vh = viewport.height;
 
-
             /* =====================================================
-               PORTRAIT MOBILE
+               DESKTOP
+               Keep desktop behavior unchanged.
                ===================================================== */
 
-            if (isMobile && vh > vw) {
+            if (!isMobile) {
 
-                /*
-                 * Fit game to phone WIDTH.
-                 */
-
-                let width = Math.min(vw - 20, GAME_WIDTH);
+                let width = Math.min(vw, GAME_WIDTH);
                 let height = width / GAME_RATIO;
-
-
-                /*
-                 * If height is somehow larger than
-                 * the available viewport, fit by height.
-                 */
-
-                if (height > vh - 20) {
-
-                    height = vh - 20;
-
-
-                    width = height * GAME_RATIO;
-                }
-
-
-                /*
-                 * Center exactly.
-                 */
-
-                container.style.position = "fixed";
-                container.style.left = "50%";
-                container.style.top = "50%";
-                container.style.width = Math.floor(width) + "px";
-                container.style.height = Math.floor(height) + "px";
-                container.style.transform = "translate(-50%, -50%)";
-                canvas.style.width = "100%";
-                canvas.style.height = "100%";
-                return;
-            }
-
-
-            /* =====================================================
-               MOBILE LANDSCAPE
-               ===================================================== */
-
-            if (isMobile && vw > vh) {
-
-                let width = vw;
-                let height = width / GAME_RATIO;
-
-
-                /*
-                 * Fit vertically if needed.
-                 */
 
                 if (height > vh) {
-
                     height = vh;
                     width = height * GAME_RATIO;
                 }
 
-
-                /*
-                 * Do not exceed original resolution.
-                 */
-
-                if (width > GAME_WIDTH) {
-
-                    width = GAME_WIDTH;
-                    height = GAME_HEIGHT;
-                }
-
-
                 container.style.position = "fixed";
                 container.style.left = "50%";
                 container.style.top = "50%";
                 container.style.width = Math.floor(width) + "px";
                 container.style.height = Math.floor(height) + "px";
                 container.style.transform = "translate(-50%, -50%)";
+                container.style.display = "block";
+
                 canvas.style.width = "100%";
                 canvas.style.height = "100%";
+
                 return;
             }
 
-
             /* =====================================================
-               DESKTOP
+               MOBILE PORTRAIT
+               Unity is hidden. Ask the player to rotate.
                ===================================================== */
 
-            let width = Math.min(vw, GAME_WIDTH);
+            if (vh > vw) {
+                container.style.display = "none";
+                fullscreenButton.style.display = "none";
+                document.getElementById("portrait-overlay").style.display = "flex";
+                return;
+            }
+
+            /* =====================================================
+               MOBILE LANDSCAPE
+               Fill available viewport while preserving 16:10.
+               ===================================================== */
+
+            document.getElementById("portrait-overlay").style.display = "none";
+            fullscreenButton.style.display = "flex";
+
+            let width = vw;
             let height = width / GAME_RATIO;
 
-
-            /*
-             * Fit desktop viewport height.
-             */
-
             if (height > vh) {
-
                 height = vh;
                 width = height * GAME_RATIO;
             }
 
-
-            /*
-             * Final safety clamp.
-             */
-
-            width = Math.min(width, GAME_WIDTH);
-            height = width / GAME_RATIO;
             container.style.position = "fixed";
             container.style.left = "50%";
             container.style.top = "50%";
             container.style.width = Math.floor(width) + "px";
             container.style.height = Math.floor(height) + "px";
             container.style.transform = "translate(-50%, -50%)";
+            container.style.display = "block";
+
             canvas.style.width = "100%";
             canvas.style.height = "100%";
         }
@@ -839,6 +861,7 @@
 
         window.addEventListener("orientationchange", function () {
 
+            setTimeout(resizeGame, 100);
             setTimeout(resizeGame, 300);
             setTimeout(resizeGame, 700);
         },
@@ -935,15 +958,88 @@
            FULLSCREEN
            ========================================================= */
 
-        fullscreenButton.addEventListener("click", function () {
+        async function enterMobileFullscreenLandscape() {
 
-            if (window.unityInstance) {
-
-                window.unityInstance.SetFullscreen(1);
+            if (!isMobile) {
+                return;
             }
 
+            /* Fullscreen must be requested from a user gesture. */
+            try {
+                if (!document.fullscreenElement) {
+                    const root = document.documentElement;
+
+                    if (root.requestFullscreen) {
+                        await root.requestFullscreen();
+                    }
+                    else if (root.webkitRequestFullscreen) {
+                        root.webkitRequestFullscreen();
+                    }
+                }
+            }
+            catch (error) {
+                console.log("Browser fullscreen unavailable:", error);
+            }
+
+            /* Orientation lock is supported on some mobile browsers,
+               especially Android Chrome. */
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    try {
+                        await screen.orientation.lock("landscape-primary");
+                    }
+                    catch (error) {
+                        try {
+                            await screen.orientation.lock("landscape");
+                        }
+                        catch (lockError) {
+                            console.log("Landscape lock unavailable:", lockError);
+                        }
+                    }
+                }
+            }
+            catch (error) {
+                console.log("Orientation lock unavailable:", error);
+            }
+
+            if (window.unityInstance) {
+                try {
+                    window.unityInstance.SetFullscreen(1);
+                }
+                catch (error) {
+                    console.log("Unity fullscreen unavailable:", error);
+                }
+            }
+
+            setTimeout(resizeGame, 300);
+            setTimeout(resizeGame, 800);
         }
-        );
+
+
+        fullscreenButton.addEventListener("click", function () {
+
+            /* Desktop behavior remains exactly the same. */
+            if (!isMobile) {
+
+                if (window.unityInstance) {
+                    window.unityInstance.SetFullscreen(1);
+                }
+
+                return;
+            }
+
+            enterMobileFullscreenLandscape();
+        });
+
+
+        document.getElementById("rotate-fullscreen-button")
+            .addEventListener("click", function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                enterMobileFullscreenLandscape();
+            });
 
 
         /* =========================================================
