@@ -1,50 +1,72 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <title>Lil Taz’s Rooftop Run</title>
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+          content="width=device-width,
+                   initial-scale=1,
+                   maximum-scale=1,
+                   user-scalable=no,
+                   viewport-fit=cover,
+                   interactive-widget=resizes-content">
 
-    <meta name="theme-color" content="#050918">
 
     <style>
+
+        /* =========================================================
+           GLOBAL
+           ========================================================= */
+
         * {
             box-sizing: border-box;
         }
 
-        html, body {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
+        html,
+        body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            background: #050918;
+            background: radial-gradient(ellipse at 50% 42%, #26365d 0%, #111b38 45%, #050918 100%);
             touch-action: none;
-            overscroll-behavior: none;
+            position: fixed;
+            inset: 0;
         }
 
-        button {
-            font: inherit;
+
+        body {
+            width: 100vw;
+            height: 100dvh;
+            overflow: hidden;
         }
 
-        /* Background */
+
+        /* =========================================================
+           MOBILE BACKGROUND
+
+           This is visible around the landscape Unity game
+           when the phone is held vertically.
+           ========================================================= */
 
         #mobile-background {
             position: fixed;
             inset: 0;
-            background: radial-gradient( ellipse at 50% 42%, #26365d 0%, #111b38 45%, #050918 100% );
+            width: 100vw;
+            height: 100dvh;
+            background: radial-gradient(ellipse at 50% 42%, #26365d 0%, #111b38 45%, #050918 100%);
             z-index: 0;
+            display: block;
             pointer-events: none;
         }
 
+        /* Decorative city atmosphere outside the Unity game only. */
         #city-theme {
             position: fixed;
             inset: 0;
@@ -58,7 +80,7 @@
                 content: "";
                 position: absolute;
                 inset: 0;
-                background: radial-gradient( ellipse at 50% 48%, rgba(83,111,170,.19), transparent 65% );
+                background: radial-gradient(ellipse at 50% 48%, rgba(83,111,170,.19), transparent 65%);
             }
 
         .city-skyline {
@@ -69,14 +91,14 @@
             height: min(32vh, 270px);
             opacity: .82;
             background: #080e20;
-            clip-path: polygon( 0 35%, 5% 35%, 5% 52%, 9% 52%, 9% 16%, 13% 16%, 13% 43%, 18% 43%, 18% 30%, 23% 30%, 23% 57%, 29% 57%, 29% 23%, 33% 23%, 33% 46%, 39% 46%, 39% 9%, 43% 9%, 43% 38%, 49% 38%, 49% 54%, 54% 54%, 54% 28%, 60% 28%, 60% 48%, 66% 48%, 66% 15%, 70% 15%, 70% 39%, 76% 39%, 76% 26%, 81% 26%, 81% 53%, 86% 53%, 86% 19%, 91% 19%, 91% 44%, 96% 44%, 96% 31%, 100% 31%, 100% 100%, 0 100% );
+            clip-path: polygon(0 35%, 5% 35%, 5% 52%, 9% 52%, 9% 16%, 13% 16%, 13% 43%, 18% 43%, 18% 30%, 23% 30%, 23% 57%, 29% 57%, 29% 23%, 33% 23%, 33% 46%, 39% 46%, 39% 9%, 43% 9%, 43% 38%, 49% 38%, 49% 54%, 54% 54%, 54% 28%, 60% 28%, 60% 48%, 66% 48%, 66% 15%, 70% 15%, 70% 39%, 76% 39%, 76% 26%, 81% 26%, 81% 53%, 86% 53%, 86% 19%, 91% 19%, 91% 44%, 96% 44%, 96% 31%, 100% 31%, 100% 100%, 0 100%);
         }
 
             .city-skyline::after {
                 content: "";
                 position: absolute;
                 inset: 0;
-                background-image: radial-gradient( #c18e53 1px, transparent 1.7px );
+                background-image: radial-gradient(#c18e53 1px, transparent 1.7px);
                 background-size: 23px 29px;
                 opacity: .36;
             }
@@ -88,7 +110,7 @@
             right: 0;
             height: 14px;
             border-top: 2px solid rgba(154,119,67,.35);
-            background: repeating-linear-gradient( 110deg, #111727 0 32px, #1b2333 32px 35px );
+            background: repeating-linear-gradient(110deg, #111727 0 32px, #1b2333 32px 35px);
         }
 
         @media (prefers-reduced-motion: no-preference) {
@@ -107,7 +129,13 @@
             }
         }
 
-        /* Unity container: 960 x 600 reference */
+
+        /* =========================================================
+           UNITY CONTAINER
+
+           IMPORTANT:
+           Unity remains 960 x 600 / 16:10.
+           ========================================================= */
 
         #unity-container {
             position: fixed;
@@ -121,25 +149,33 @@
             z-index: 10;
         }
 
+
+        /* =========================================================
+           UNITY CANVAS
+           ========================================================= */
+
         #unity-canvas {
             display: block;
             width: 100%;
             height: 100%;
-            margin: 0;
-            padding: 0;
-            border: 0;
-            outline: none;
             background: #000;
+            outline: none;
             touch-action: none;
         }
 
-        /* Loading screen */
+
+        /* =========================================================
+           LOADING SCREEN
+
+           Restored from your previous version.
+           Full browser / mobile screen.
+           ========================================================= */
 
         #loading-screen {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            left: 0;
+            top: 0;
+            width: 100vw;
             height: 100dvh;
             display: flex;
             flex-direction: column;
@@ -150,34 +186,48 @@
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
+
+        /* =========================================================
+           LOADING LOGO
+           ========================================================= */
+
         #loading-logo {
-            max-width: 90vw;
-            padding: 0 12px;
-            margin-bottom: 50px;
             color: #00ffff;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 52px;
             font-weight: bold;
-            line-height: 1.2;
+            margin-bottom: 50px;
             text-align: center;
             text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 40px cyan;
+            line-height: 1.2;
         }
+
+
+        /* =========================================================
+           LOADING BAR
+           ========================================================= */
 
         #loading-bar {
             width: 420px;
             max-width: 80vw;
             height: 22px;
-            overflow: hidden;
-            border-radius: 20px;
             background: #222;
+            border-radius: 20px;
+            overflow: hidden;
         }
+
 
         #loading-fill {
             width: 0%;
             height: 100%;
             background: #00ffff;
-            transition: width .2s ease;
+            transition: width 0.2s ease;
         }
+
+
+        /* =========================================================
+           LOADING PERCENT
+           ========================================================= */
 
         #loading-percent {
             margin-top: 20px;
@@ -187,8 +237,12 @@
             text-align: center;
         }
 
+
+        /* =========================================================
+           LOADING TEXT
+           ========================================================= */
+
         #loading-text {
-            max-width: 90vw;
             margin-top: 10px;
             color: #aaa;
             font-family: Arial, Helvetica, sans-serif;
@@ -196,7 +250,10 @@
             text-align: center;
         }
 
-        /* Fullscreen toggle button */
+
+        /* =========================================================
+           FULLSCREEN BUTTON
+           ========================================================= */
 
         #unity-fullscreen-button {
             position: fixed;
@@ -207,9 +264,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255,255,255,.25);
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 8px;
-            background: rgba(0,0,0,.65);
             color: #fff;
             font-size: 22px;
             cursor: pointer;
@@ -219,22 +276,222 @@
             touch-action: manipulation;
         }
 
+
             #unity-fullscreen-button:hover {
-                background: rgba(0,0,0,.9);
+                background: rgba(0, 0, 0, 0.9);
             }
 
-        /* Portrait rotate overlay */
+
+        /* =========================================================
+           DESKTOP
+
+           Desktop stays landscape.
+           ========================================================= */
+
+        @media screen and (min-width: 769px) {
+
+            #unity-container {
+                width: min(960px, 100vw);
+                height: min(600px, 100vh);
+                aspect-ratio: 16 / 10;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE LANDSCAPE
+
+           Example:
+           844 x 390
+
+           Game becomes approximately:
+           624 x 390
+           while preserving 16:10.
+           ========================================================= */
+
+        @media screen and (max-width: 768px) and (orientation: landscape) {
+
+            #mobile-background {
+                display: block;
+            }
+
+
+            #unity-container {
+                width: 100vw;
+                height: 100dvh;
+                max-width: 100vw;
+                max-height: 100dvh;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                aspect-ratio: 16 / 10;
+            }
+
+
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+            }
+
+
+            #unity-fullscreen-button {
+                display: flex;
+            }
+
+
+            #loading-logo {
+                font-size: 38px;
+                margin-bottom: 35px;
+            }
+
+
+            #loading-bar {
+                width: 320px;
+                max-width: 75vw;
+            }
+
+
+            #loading-percent {
+                font-size: 20px;
+            }
+
+
+            #loading-text {
+                font-size: 16px;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE PORTRAIT
+
+           IMPORTANT:
+
+           PHONE = PORTRAIT
+           UNITY GAME = LANDSCAPE
+
+           The Unity game is centered.
+           It is NEVER stretched to 9:16.
+           ========================================================= */
+
+        @media screen and (max-width: 768px) and (orientation: portrait) {
+
+            #mobile-background {
+                display: block;
+            }
+
+
+            #unity-container {
+                /*
+                 * Use phone width minus a small margin.
+                 */
+
+                width: calc(100vw - 20px);
+                /*
+                 * Maintain 960 / 600 ratio.
+                 */
+
+                height: calc( (100vw - 20px) * 600 / 960 );
+                max-width: calc(100vw - 20px);
+                max-height: calc(100dvh - 20px);
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                aspect-ratio: 16 / 10;
+            }
+
+
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+            }
+
+
+            /*
+             * Hide fullscreen button in portrait.
+             */
+
+            #unity-fullscreen-button {
+                display: none;
+            }
+
+
+            /*
+             * Loading remains full portrait screen.
+             */
+
+            #loading-logo {
+                font-size: clamp( 28px, 8vw, 40px );
+                margin-bottom: clamp( 25px, 7vw, 40px );
+                padding: 0 20px;
+            }
+
+
+            #loading-bar {
+                width: min(320px, 78vw);
+                height: 18px;
+            }
+
+
+            #loading-percent {
+                font-size: 20px;
+            }
+
+
+            #loading-text {
+                font-size: 16px;
+            }
+        }
+
+
+        /* =========================================================
+           VERY SMALL PORTRAIT PHONES
+           ========================================================= */
+
+        @media screen and (max-width: 400px) and (orientation: portrait) {
+
+            #unity-container {
+                width: calc(100vw - 12px);
+                height: calc( (100vw - 12px) * 600 / 960 );
+                max-width: calc(100vw - 12px);
+            }
+
+
+            #loading-logo {
+                font-size: 28px;
+            }
+
+
+            #loading-bar {
+                width: 260px;
+                max-width: 75vw;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE ONLY: PORTRAIT ROTATE OVERLAY
+           ========================================================= */
 
         #portrait-overlay {
             position: fixed;
             inset: 0;
             z-index: 3000;
             display: none;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+            justify-content: center;
+            flex-direction: column;
             text-align: center;
+            padding: 24px;
             background: #050918;
             color: #fff;
             font-family: Arial, Helvetica, sans-serif;
@@ -242,23 +499,23 @@
         }
 
         .rotate-icon {
-            margin-bottom: 18px;
             font-size: 72px;
             line-height: 1;
+            margin-bottom: 18px;
         }
 
         .rotate-title {
-            margin-bottom: 10px;
             font-size: 27px;
             font-weight: 700;
+            margin-bottom: 10px;
         }
 
         .rotate-text {
             max-width: 340px;
-            margin-bottom: 22px;
-            color: #cbd4ea;
             font-size: 16px;
             line-height: 1.45;
+            color: #cbd4ea;
+            margin-bottom: 22px;
         }
 
         #rotate-fullscreen-button {
@@ -275,29 +532,6 @@
             touch-action: manipulation;
         }
 
-        /* Responsive loading UI */
-
-        @media screen and (max-width: 768px) {
-            #loading-logo {
-                font-size: clamp(26px, 5vw, 38px);
-                margin-bottom: 25px;
-            }
-
-            #loading-bar {
-                height: 18px;
-            }
-
-            #loading-percent {
-                font-size: 20px;
-            }
-
-            #loading-text {
-                font-size: 16px;
-            }
-        }
-
-        /* Portrait mode: show rotate overlay */
-
         @media screen and (max-width: 768px) and (orientation: portrait) {
             #unity-container {
                 display: none !important;
@@ -308,89 +542,123 @@
             }
 
             #portrait-overlay {
-                display: flex;
+                display: flex !important;
+            }
+        }
+
+
+        /* =========================================================
+           SAFE AREA
+           ========================================================= */
+
+        @supports (padding: env(safe-area-inset-top)) {
+
+            #unity-container {
+                /*
+                 * Don't add padding to Unity.
+                 * Safe area is handled by viewport/background.
+                 */
             }
         }
     </style>
+
 </head>
+
 
 <body>
 
-    <!-- Background -->
-    <div id="mobile-background"></div>
 
+    <!-- =========================================================
+         BACKGROUND
+         ========================================================= -->
+
+    <div id="mobile-background"></div>
     <div id="city-theme" aria-hidden="true">
         <div class="city-skyline"></div>
         <div class="rooftop-edge"></div>
     </div>
 
-    <!-- Unity -->
+
+    <!-- =========================================================
+         UNITY
+         ========================================================= -->
+
     <div id="unity-container">
+
         <canvas id="unity-canvas"
                 width="960"
                 height="600"
                 tabindex="-1">
         </canvas>
+
     </div>
 
-    <!-- Loading screen -->
+
+    <!-- =========================================================
+         LOADING SCREEN
+
+         This is the same style as your previous loading screen.
+         ========================================================= -->
+
     <div id="loading-screen">
-        <div id="loading-logo">Lil Taz’s Rooftop Run</div>
+
+        <div id="loading-logo">
+            Lil Taz’s Rooftop Run
+        </div>
+
 
         <div id="loading-bar">
+
             <div id="loading-fill"></div>
+
         </div>
 
-        <div id="loading-percent">0%</div>
-        <div id="loading-text">Loading...</div>
+
+        <div id="loading-percent">
+            0%
+        </div>
+
+
+        <div id="loading-text">
+            Loading...
+        </div>
+
     </div>
 
-    <!-- Fullscreen toggle -->
-    <button id="unity-fullscreen-button"
-            type="button"
-            aria-label="Enter fullscreen"
-            title="Enter fullscreen">
+
+    <!-- =========================================================
+         FULLSCREEN
+         ========================================================= -->
+
+    <div id="unity-fullscreen-button">
         ⛶
-    </button>
-
-    <!-- Portrait overlay -->
-    <div id="portrait-overlay">
-        <div class="rotate-icon" aria-hidden="true">⟳</div>
-
-        <div class="rotate-title">Please rotate your phone</div>
-
-        <div class="rotate-text">
-            Lil Taz’s Rooftop Run is designed to play in landscape mode.
-            Turn your phone sideways to continue.
-        </div>
-
-        <button id="rotate-fullscreen-button" type="button">
-            ROTATE / FULLSCREEN
-        </button>
     </div>
+
+    <!-- MOBILE ONLY: shown when the phone is held vertically -->
+    <div id="portrait-overlay">
+        <div class="rotate-icon">⟳</div>
+        <div class="rotate-title">Please rotate your phone</div>
+        <div class="rotate-text">This game is designed to play in landscape mode.</div>
+        <button id="rotate-fullscreen-button" type="button">ROTATE / FULLSCREEN</button>
+    </div>
+
 
     <script>
-        "use strict";
 
-        /* Unity Build configuration: filenames preserved */
+
+        /* =========================================================
+           UNITY CONFIG
+
+           SAME BUILD FILES FROM YOUR ORIGINAL HTML
+           ========================================================= */
 
         const buildUrl = "Build";
-
-        const loaderUrl =
-            buildUrl + "/91fa5c27ae02a9be1ef88bc143db8adb.loader.js";
-
+        const loaderUrl = buildUrl + "/91fa5c27ae02a9be1ef88bc143db8adb.loader.js";
         const config = {
             arguments: [],
-
-            dataUrl:
-                buildUrl + "/592912b618a344a3688ce842bc8ccfdf.data.unityweb",
-
-            frameworkUrl:
-                buildUrl + "/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
-
-            codeUrl:
-                buildUrl + "/71f16aca77cd12b36d965cfb1694626d.wasm.unityweb",
-
+            dataUrl: buildUrl + "/592912b618a344a3688ce842bc8ccfdf.data.unityweb",
+            frameworkUrl: buildUrl + "/a39a7ca4ba6923980b775f5618c0ac5e.framework.js.unityweb",
+            codeUrl: buildUrl + "/71f16aca77cd12b36d965cfb1694626d.wasm.unityweb",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
             productName: "Lil Taz’s Rooftop Run",
@@ -399,76 +667,137 @@
             preserveDrawingBuffer: true
         };
 
-       
+        /* =========================================================
+           GAME SIZE
+           ========================================================= */
+
         const GAME_WIDTH = 960;
+
         const GAME_HEIGHT = 600;
-        const GAME_RATIO = GAME_WIDTH / GAME_HEIGHT;
+
+        const GAME_RATIO =
+            GAME_WIDTH / GAME_HEIGHT;
+
+
+        /* =========================================================
+           ELEMENTS
+           ========================================================= */
 
         const canvas = document.getElementById("unity-canvas");
         const container = document.getElementById("unity-container");
         const loadingScreen = document.getElementById("loading-screen");
         const loadingFill = document.getElementById("loading-fill");
         const loadingPercent = document.getElementById("loading-percent");
-        const loadingText = document.getElementById("loading-text");
         const fullscreenButton = document.getElementById("unity-fullscreen-button");
-        const portraitOverlay = document.getElementById("portrait-overlay");
-        const rotateButton = document.getElementById("rotate-fullscreen-button");
 
-        /*
-         * Detect phones and tablets, including iPads that identify
-         * themselves as Macintosh computers.
-         */
-        const isMobile =
-            /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
-            (
-                navigator.maxTouchPoints > 1 &&
-                /Macintosh/i.test(navigator.userAgent)
-            );
 
-        let unityInstance = null;
-        let resizeFrame = null;
-        let fullscreenBusy = false;
+        /* =========================================================
+           DEVICE
+           ========================================================= */
+
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+
+        /* =========================================================
+           GET VIEWPORT
+
+           visualViewport is important for mobile browsers
+           and keyboard resizing.
+           ========================================================= */
 
         function getViewport() {
-            const viewport = window.visualViewport;
+
+            let width = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+            let height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
             return {
-                width: Math.max(
-                    1,
-                    viewport ? viewport.width : window.innerWidth
-                ),
-                height: Math.max(
-                    1,
-                    viewport ? viewport.height : window.innerHeight
-                )
+
+                width: width,
+
+                height: height
             };
         }
 
-        /*
-         * Keep the original 16:10 ratio.
-         * Never stretch the game to match the device's aspect ratio.
-         */
-        function calculateGameSize(viewportWidth, viewportHeight) {
-            let width = Math.min(viewportWidth, GAME_WIDTH);
+
+        /* =========================================================
+           RESIZE GAME
+
+           CORE FIX:
+
+           Never stretch Unity 960x600
+           into portrait 9:16.
+
+           Always preserve 16:10.
+           ========================================================= */
+
+        function resizeGame() {
+
+            const viewport = getViewport();
+            const vw = viewport.width;
+            const vh = viewport.height;
+
+            /* =====================================================
+               DESKTOP
+               Keep desktop behavior unchanged.
+               ===================================================== */
+
+            if (!isMobile) {
+
+                let width = Math.min(vw, GAME_WIDTH);
+                let height = width / GAME_RATIO;
+
+                if (height > vh) {
+                    height = vh;
+                    width = height * GAME_RATIO;
+                }
+
+                container.style.position = "fixed";
+                container.style.left = "50%";
+                container.style.top = "50%";
+                container.style.width = Math.floor(width) + "px";
+                container.style.height = Math.floor(height) + "px";
+                container.style.transform = "translate(-50%, -50%)";
+                container.style.display = "block";
+
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
+
+                return;
+            }
+
+            /* =====================================================
+               MOBILE PORTRAIT
+               Unity is hidden. Ask the player to rotate.
+               ===================================================== */
+
+            if (vh > vw) {
+                container.style.display = "none";
+                fullscreenButton.style.display = "none";
+                document.getElementById("portrait-overlay").style.display = "flex";
+                return;
+            }
+
+            /* =====================================================
+               MOBILE LANDSCAPE
+               Fill available viewport while preserving 16:10.
+               ===================================================== */
+
+            document.getElementById("portrait-overlay").style.display = "none";
+            fullscreenButton.style.display = "flex";
+
+            let width = vw;
             let height = width / GAME_RATIO;
 
-            if (height > viewportHeight) {
-                height = Math.min(viewportHeight, GAME_HEIGHT);
+            if (height > vh) {
+                height = vh;
                 width = height * GAME_RATIO;
             }
 
-            return {
-                width: Math.max(1, Math.floor(width)),
-                height: Math.max(1, Math.floor(height))
-            };
-        }
-
-        function applyGameSize(width, height) {
             container.style.position = "fixed";
             container.style.left = "50%";
             container.style.top = "50%";
-            container.style.width = width + "px";
-            container.style.height = height + "px";
+            container.style.width = Math.floor(width) + "px";
+            container.style.height = Math.floor(height) + "px";
             container.style.transform = "translate(-50%, -50%)";
             container.style.display = "block";
 
@@ -476,285 +805,338 @@
             canvas.style.height = "100%";
         }
 
-        function resizeGame() {
-            const viewport = getViewport();
-            const portrait =
-                viewport.height > viewport.width;
 
-            if (isMobile && portrait) {
-                container.style.display = "none";
-                fullscreenButton.style.display = "none";
-                portraitOverlay.style.display = "flex";
-                return;
-            }
-
-            portraitOverlay.style.display = "none";
-
-            const size = calculateGameSize(
-                viewport.width,
-                viewport.height
-            );
-
-            applyGameSize(size.width, size.height);
-
-            fullscreenButton.style.display = "flex";
-        }
-
-        function handleResize() {
-            if (resizeFrame !== null) {
-                cancelAnimationFrame(resizeFrame);
-            }
-
-            resizeFrame = requestAnimationFrame(function () {
-                resizeFrame = null;
-                resizeGame();
-            });
-        }
-
-        function handleOrientationChange() {
-            handleResize();
-            setTimeout(handleResize, 150);
-            setTimeout(handleResize, 400);
-            setTimeout(handleResize, 800);
-        }
+        /* =========================================================
+           INITIAL RESIZE
+           ========================================================= */
 
         resizeGame();
 
+
+        /* =========================================================
+           DEBOUNCED RESIZE
+           ========================================================= */
+
+        let resizeTimeout = null;
+
+
+        function handleResize() {
+
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () { resizeGame(); }, 100);
+        }
+
+
+        /* =========================================================
+           WINDOW RESIZE
+           ========================================================= */
+
         window.addEventListener("resize", handleResize, {
             passive: true
-        });
-
-        window.addEventListener(
-            "orientationchange",
-            handleOrientationChange,
-            { passive: true }
+        }
         );
 
-        window.addEventListener("pageshow", handleOrientationChange);
+
+        /* =========================================================
+           VISUAL VIEWPORT
+           ========================================================= */
 
         if (window.visualViewport) {
-            window.visualViewport.addEventListener(
-                "resize",
-                handleResize,
-                { passive: true }
+
+            window.visualViewport.addEventListener("resize", handleResize,
+                {
+                    passive: true
+                }
+            );
+            window.visualViewport.addEventListener("scroll", handleResize, {
+                passive: true
+            }
             );
         }
 
-        document.addEventListener(
-            "visibilitychange",
-            function () {
-                if (!document.hidden) {
-                    handleOrientationChange();
-                }
+
+        /* =========================================================
+           ORIENTATION CHANGE
+           ========================================================= */
+
+        window.addEventListener("orientationchange", function () {
+
+            setTimeout(resizeGame, 100);
+            setTimeout(resizeGame, 300);
+            setTimeout(resizeGame, 700);
+        },
+            {
+                passive: true
             }
         );
+
+
+        /* =========================================================
+           CANVAS CONTEXT MENU
+           ========================================================= */
 
         canvas.addEventListener("contextmenu", function (event) {
             event.preventDefault();
+
+        }
+        );
+
+
+        /* =========================================================
+           LOAD UNITY
+           ========================================================= */
+
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = function () {
+            const finalConfig = { ...config, preserveDrawingBuffer: true };
+            createUnityInstance(canvas, finalConfig,
+
+                function (progress) {
+
+                    /*
+                     * Unity progress:
+                     * 0.0 -> 1.0
+                     */
+
+                    const percent = Math.floor(progress * 100);
+                    loadingFill.style.width = percent + "%";
+                    loadingPercent.textContent = percent + "%";
+                    if (percent >= 100) {
+
+                        loadingPercent.textContent = "100%";
+                    }
+                }
+
+            )
+                .then(function (unityInstance) {
+
+                    /*
+                     * Store instance globally.
+                     */
+
+                    window.unityInstance = unityInstance;
+                    /*
+                     * Make sure final game
+                     * position is correct.
+                     */
+                    resizeGame();
+                    /*
+                     * Give Unity a moment to
+                     * finish its first frame.
+                     */
+                    setTimeout(function () {
+
+                        loadingScreen.style.display = "none";
+                        resizeGame();
+                    }, 150);
+
+                }
+                )
+                .catch(function (message) {
+
+                    console.error("Unity WebGL Error:", message);
+                    loadingPercent.textContent = "Error";
+                    document.getElementById("loading-text").textContent = "Unable to load game";
+                    alert(message);
+                }
+                );
+        };
+
+
+        script.onerror = function () {
+
+            console.error("Unity loader failed:", loaderUrl);
+            loadingPercent.textContent = "Error";
+            document.getElementById("loading-text").textContent = "Unable to load game.";
+        };
+
+
+        document.body.appendChild(script);
+
+        /* =========================================================
+           FULLSCREEN
+           ========================================================= */
+
+        async function enterMobileFullscreenLandscape() {
+
+            if (!isMobile) {
+                return;
+            }
+
+            /* Fullscreen must be requested from a user gesture. */
+            try {
+                if (!document.fullscreenElement) {
+                    const root = document.documentElement;
+
+                    if (root.requestFullscreen) {
+                        await root.requestFullscreen();
+                    }
+                    else if (root.webkitRequestFullscreen) {
+                        root.webkitRequestFullscreen();
+                    }
+                }
+            }
+            catch (error) {
+                console.log("Browser fullscreen unavailable:", error);
+            }
+
+            /* Orientation lock is supported on some mobile browsers,
+               especially Android Chrome. */
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    try {
+                        await screen.orientation.lock("landscape-primary");
+                    }
+                    catch (error) {
+                        try {
+                            await screen.orientation.lock("landscape");
+                        }
+                        catch (lockError) {
+                            console.log("Landscape lock unavailable:", lockError);
+                        }
+                    }
+                }
+            }
+            catch (error) {
+                console.log("Orientation lock unavailable:", error);
+            }
+
+            if (window.unityInstance) {
+                try {
+                    window.unityInstance.SetFullscreen(1);
+                }
+                catch (error) {
+                    console.log("Unity fullscreen unavailable:", error);
+                }
+            }
+
+            setTimeout(resizeGame, 300);
+            setTimeout(resizeGame, 800);
+        }
+
+
+        fullscreenButton.addEventListener("click", function () {
+
+            /* Desktop behavior remains exactly the same. */
+            if (!isMobile) {
+
+                if (window.unityInstance) {
+                    window.unityInstance.SetFullscreen(1);
+                }
+
+                return;
+            }
+
+            enterMobileFullscreenLandscape();
         });
+
+
+        document.getElementById("rotate-fullscreen-button")
+            .addEventListener("click", function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                enterMobileFullscreenLandscape();
+            });
+
+
+        /* =========================================================
+           KEYBOARD / INPUT FOCUS
+           ========================================================= */
+
+        document.addEventListener("focusin", function (event) {
+
+            if (event.target.tagName === "INPUT" ||
+                event.target.tagName === "TEXTAREA") {
+
+                setTimeout(resizeGame, 300);
+            }
+        }
+        );
+
+
+        document.addEventListener("focusout", function (event) {
+
+            if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
+
+                setTimeout(resizeGame, 300);
+            }
+        }
+        );
+
+
+        /* =========================================================
+           ANDROID
+           ========================================================= */
+
+        if (/Android/i.test(navigator.userAgent)) {
+
+            document.addEventListener("visibilitychange", function () {
+
+                if (!document.hidden) {
+
+                    setTimeout(resizeGame, 300);
+                }
+            }
+            );
+
+
+            window.addEventListener("scroll", function () {
+
+                if (window.innerWidth > window.innerHeight) {
+
+                    setTimeout(resizeGame, 100);
+                }
+            },
+                {
+                    passive: true
+                }
+            );
+        }
+
+
+        /* =========================================================
+           IOS SAFARI
+           ========================================================= */
+
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+
+            document.addEventListener("gesturestart", function (event) {
+                event.preventDefault();
+
+            }
+            );
+
+            window.addEventListener("resize",
+                function () {
+
+                    setTimeout(resizeGame, 500);
+
+                },
+                {
+                    passive: true
+                }
+            );
+        }
+
+
+        /* =========================================================
+           PREVENT DOUBLE-TAP ZOOM
+           ========================================================= */
 
         document.addEventListener("dblclick", function (event) {
             event.preventDefault();
-        }, { passive: false });
-
-        /*
-         * Fullscreen helpers support standard and WebKit APIs.
-         */
-        function isFullscreenActive() {
-            return !!(
-                document.fullscreenElement ||
-                document.webkitFullscreenElement
-            );
-        }
-
-        async function requestBrowserFullscreen() {
-            const target = document.documentElement;
-
-            if (target.requestFullscreen) {
-                await target.requestFullscreen();
-                return true;
+        },
+            {
+                passive: false
             }
+        );
 
-            if (target.webkitRequestFullscreen) {
-                target.webkitRequestFullscreen();
-                return true;
-            }
 
-            return false;
-        }
-
-        async function exitBrowserFullscreen() {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-                return true;
-            }
-
-            if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-                return true;
-            }
-
-            return false;
-        }
-
-        async function tryLandscapeLock() {
-            if (
-                !isMobile ||
-                !screen.orientation ||
-                typeof screen.orientation.lock !== "function"
-            ) {
-                return;
-            }
-
-            try {
-                await screen.orientation.lock("landscape");
-            } catch (error) {
-                /*
-                 * Some browsers only allow orientation locking in
-                 * fullscreen; iOS Safari may not support it.
-                 */
-                console.info("Landscape lock unavailable in this browser.");
-            }
-        }
-
-        function updateFullscreenButton() {
-            const active = isFullscreenActive();
-
-            fullscreenButton.title = active
-                ? "Exit fullscreen"
-                : "Enter fullscreen";
-
-            fullscreenButton.setAttribute(
-                "aria-label",
-                fullscreenButton.title
-            );
-
-            fullscreenButton.textContent = "⛶";
-        }
-
-        /*
-         * One button toggles fullscreen on mobile and desktop.
-         */
-        async function toggleFullscreen() {
-            if (fullscreenBusy) {
-                return;
-            }
-
-            fullscreenBusy = true;
-
-            try {
-                if (isFullscreenActive()) {
-                    await exitBrowserFullscreen();
-                } else if (isMobile) {
-                    const entered = await requestBrowserFullscreen();
-
-                    /*
-                     * Fall back to Unity fullscreen if the browser's
-                     * fullscreen API is unavailable.
-                     */
-                    if (!entered && unityInstance) {
-                        unityInstance.SetFullscreen(1);
-                    }
-
-                    await tryLandscapeLock();
-                } else if (unityInstance) {
-                    unityInstance.SetFullscreen(1);
-                }
-            } catch (error) {
-                console.warn("Fullscreen toggle failed:", error);
-            } finally {
-                fullscreenBusy = false;
-
-                handleOrientationChange();
-                updateFullscreenButton();
-            }
-        }
-
-        fullscreenButton.addEventListener("click", toggleFullscreen);
-
-        /*
-         * The rotate overlay button attempts fullscreen and landscape
-         * locking. On devices that reject it, rotate the device manually.
-         */
-        rotateButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            toggleFullscreen();
-        });
-
-        document.addEventListener("fullscreenchange", function () {
-            handleOrientationChange();
-            updateFullscreenButton();
-        });
-
-        document.addEventListener("webkitfullscreenchange", function () {
-            handleOrientationChange();
-            updateFullscreenButton();
-        });
-
-        /*
-         * Load Unity.
-         */
-        const script = document.createElement("script");
-        script.src = loaderUrl;
-
-        script.onload = function () {
-            if (typeof createUnityInstance !== "function") {
-                showLoadError("Unity loader did not initialize correctly.");
-                return;
-            }
-
-            createUnityInstance(
-                canvas,
-                config,
-                function (progress) {
-                    const percent = Math.min(
-                        100,
-                        Math.floor(progress * 100)
-                    );
-
-                    loadingFill.style.width = percent + "%";
-                    loadingPercent.textContent = percent + "%";
-
-                    if (percent >= 100) {
-                        loadingText.textContent = "Starting game...";
-                    }
-                }
-            )
-                .then(function (instance) {
-                    unityInstance = instance;
-                    window.unityInstance = instance;
-
-                    resizeGame();
-
-                    requestAnimationFrame(function () {
-                        loadingScreen.style.display = "none";
-                        resizeGame();
-                    });
-                })
-                .catch(function (error) {
-                    console.error("Unity WebGL error:", error);
-                    showLoadError(
-                        "Unable to initialize the game. Please refresh and try again."
-                    );
-                });
-        };
-
-        script.onerror = function () {
-            console.error("Unable to load Unity loader:", loaderUrl);
-
-            showLoadError(
-                "Unable to load the game files. Check your Build folder and connection."
-            );
-        };
-
-        function showLoadError(message) {
-            loadingPercent.textContent = "Error";
-            loadingText.textContent = message;
-        }
-
-        document.body.appendChild(script);
     </script>
 
 </body>
+
 </html>
